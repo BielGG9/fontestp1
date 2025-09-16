@@ -1,22 +1,23 @@
 package gabriel.fontes.br.quarkus.Dto;
 
-public class FonteRequest {
-    private String nome;
-    private Integer potencia;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
-    public String getNome() {
-        return nome;
-    }
+public record FonteRequest(
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    @NotBlank(message = "O nome deve conter ao menos 1 caractere")
+    String nome,
 
-    public Integer getPotencia() {
-        return potencia;
-    }
+    @NotBlank(message = "A potência deve ser um número positivo")
+    Integer potencia,
 
-    public void setPotencia(Integer potencia) {
-        this.potencia = potencia;
-    }
-}
+
+    @Positive(message = "O preço deve ser um número positivo")
+    double preco,
+
+    @NotNull(message = "O fabricante deve conter ao menos 1 caractere")
+    String fabricante
+    
+) {}
+ 
