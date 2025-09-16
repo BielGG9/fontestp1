@@ -13,18 +13,15 @@ import jakarta.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ApplicationScoped // Define esta classe como um bean gerenciado pelo Quarkus
+@ApplicationScoped 
 public class FonteServiceImpl implements FonteService {
 
-    @Inject // Injeta o repositório para interagir com o banco de dados
+    @Inject 
     FonteRepository repository;
+    
 
-    /**
-     * CREATE
-     * Cria uma nova Fonte no banco de dados.
-     */
     @Override
-    @Transactional // Necessário para qualquer operação de escrita (create, update, delete)
+    @Transactional 
     public FonteResponse create(FonteRequest dto) {
         // 1. Cria uma nova entidade vazia
         Fonte novaFonte = new Fonte();
@@ -42,51 +39,39 @@ public class FonteServiceImpl implements FonteService {
         return FonteResponse.fromEntity(novaFonte);
     }
 
-    /**
-     * READ (All)
-     * Busca todas as Fontes do banco de dados.
-     */
+    
     @Override
     public List<FonteResponse> findAll() {
+        
         // Usa Stream para converter a lista de entidades 'Fonte' em uma lista de 'FonteResponse'
         return repository.listAll().stream()
                 .map(FonteResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * READ (By ID)
-     * Busca uma única Fonte pelo seu ID.
-     */
+    
     @Override
     public FonteResponse findById(Long id) {
-        // Usa 'findByIdOptional' para buscar a fonte.
-        // Se não encontrar, lança uma NotFoundException (que resulta em um erro HTTP 404).
+        
         Fonte fonte = repository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Fonte com ID " + id + " não encontrada."));
         
         return FonteResponse.fromEntity(fonte);
     }
 
-    /**
-     * UPDATE
-     * Atualiza uma Fonte existente.
-     */
+   
     @Override
     @Transactional
     public FonteResponse update(Long id, FonteRequest dto) {
-        // 1. Primeiro, busca a fonte existente no banco. Lança erro 404 se não existir.
+        
         Fonte fonteExistente = repository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Fonte com ID " + id + " não encontrada para atualização."));
 
-        // 2. Atualiza os campos da entidade com os dados do DTO
+       
         fonteExistente.setNome(dto.nome());
         fonteExistente.setPotencia(dto.potencia());
         fonteExistente.setPreco(dto.preco());
         fonteExistente.setFabricante(dto.fabricante());
-
-        // 3. O Hibernate/Panache gerencia a atualização automaticamente ao final da transação.
-        //    Não é necessário chamar 'repository.persist()' novamente.
 
         return FonteResponse.fromEntity(fonteExistente);
     }
