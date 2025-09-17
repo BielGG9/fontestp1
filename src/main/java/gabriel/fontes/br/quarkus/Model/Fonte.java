@@ -1,7 +1,11 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -9,15 +13,17 @@ import jakarta.persistence.Table;
 public class Fonte extends DefaultEntity {
 
 
-    @Column(name = "name")
     private String nome;
 
-    @Column(name = "potencia")
     private Integer potencia;
 
     private double preco;
 
-    private String fabricante;
+    @ManyToOne(optional = false)
+    private Marca marca;
+
+    @Enumerated(EnumType.STRING)
+    private Certificacao certificacao;
 
     public Fonte() {
     }
@@ -26,7 +32,6 @@ public class Fonte extends DefaultEntity {
         this.nome = nome;
         this.potencia = potencia;
         this.preco = preco;
-        this.fabricante = fabricante;
     }
     public Fonte(String nome, Integer potencia) {
         this.nome = nome;
@@ -50,11 +55,17 @@ public class Fonte extends DefaultEntity {
     public void setPreco(double preco) {
         this.preco = preco;
     }
-    public String getFabricante() {
-        return fabricante;
+    public Marca getMarca() {
+        return marca;
     }
-    public void setFabricante(String fabricante) {
-        this.fabricante = fabricante;
+    public void setMarca(Marca marca) {
+        this.marca = marca;
+    }
+    public Certificacao getCertificacao() {
+        return certificacao;
+    }
+    public void setCertificacao(Certificacao certificacao) {
+        this.certificacao = certificacao;
     }
     
 }

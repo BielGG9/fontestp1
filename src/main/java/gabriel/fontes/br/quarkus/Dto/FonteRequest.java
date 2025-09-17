@@ -16,8 +16,12 @@ public record FonteRequest(
     @Positive(message = "O preço deve ser um número positivo")
     double preco,
 
-    @NotNull(message = "O fabricante deve conter ao menos 1 caractere")
-    String fabricante
+    @NotNull(message = "O id da marca não pode ser nulo")
+    @Positive(message = "O id da marca deve ser um número positivo")
+    Long idMarca,
+
+    @NotBlank(message = "A certificação deve conter ao menos 1 caractere")
+    String certificacao
     
 ) {}
  

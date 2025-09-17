@@ -7,7 +7,8 @@ public record FonteResponse(
     String nome,
     Integer potencia,
     double preco,
-    String fabricante
+    String marca,
+    String certificacao
 ) {
     public static FonteResponse fromEntity(Fonte fonte) {
         return new FonteResponse(
@@ -15,7 +16,8 @@ public record FonteResponse(
             fonte.getNome(),
             fonte.getPotencia(),
             fonte.getPreco(),
-            fonte.getFabricante()
+            fonte.getMarca().getNome(),
+            fonte.getCertificacao().toString()
         );
     }
 }

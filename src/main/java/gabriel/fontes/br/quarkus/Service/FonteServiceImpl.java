@@ -3,8 +3,10 @@ package gabriel.fontes.br.quarkus.Service;
 import gabriel.fontes.br.quarkus.Dto.FonteRequest;
 import gabriel.fontes.br.quarkus.Dto.FonteResponse;
 import gabriel.fontes.br.quarkus.Model.Fonte;
+import gabriel.fontes.br.quarkus.Model.Marca;
+import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
 import gabriel.fontes.br.quarkus.Repository.FonteRepository;
-
+import gabriel.fontes.br.quarkus.Repository.MarcaRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -18,6 +20,9 @@ public class FonteServiceImpl implements FonteService {
 
     @Inject 
     FonteRepository repository;
+
+    @Inject 
+    MarcaRepository marcaRepository;
     
 
     @Override
@@ -30,12 +35,12 @@ public class FonteServiceImpl implements FonteService {
         novaFonte.setNome(dto.nome());
         novaFonte.setPotencia(dto.potencia());
         novaFonte.setPreco(dto.preco());
-        novaFonte.setFabricante(dto.fabricante());
+        Marca marca = marcaRepository.findById(dto.idMarca());
+        novaFonte.setMarca(marca);
+        novaFonte.setCertificacao(Certificacao.valueOf(dto.certificacao().toUpperCase()));
 
-        // 3. Persiste a entidade no banco de dados
         repository.persist(novaFonte);
 
-        // 4. Retorna um DTO de resposta a partir da entidade salva (que agora tem um ID)
         return FonteResponse.fromEntity(novaFonte);
     }
 
@@ -71,7 +76,10 @@ public class FonteServiceImpl implements FonteService {
         fonteExistente.setNome(dto.nome());
         fonteExistente.setPotencia(dto.potencia());
         fonteExistente.setPreco(dto.preco());
-        fonteExistente.setFabricante(dto.fabricante());
+        Marca marca = marcaRepository.findById(dto.idMarca());
+        fonteExistente.setMarca(marca);
+        fonteExistente.setCertificacao(Certificacao.valueOf(dto.certificacao().toUpperCase()));
+
 
         return FonteResponse.fromEntity(fonteExistente);
     }

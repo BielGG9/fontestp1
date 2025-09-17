@@ -1,6 +1,8 @@
--- This file allow to write SQL commands that will be emitted in test and dev.
--- The commands are commented as their support depends of the database
--- insert into myentity (id, field) values(1, 'field-1');
--- insert into myentity (id, field) values(2, 'field-2');
--- insert into myentity (id, field) values(3, 'field-3');
--- alter sequence myentity_seq restart with 4;
+-- Versão simplificada com IDs fixos para teste
+INSERT INTO marca(id, nome) VALUES(1, 'Corsair');
+INSERT INTO marca(id, nome) VALUES(2, 'Seasonic');
+INSERT INTO marca(id, nome) VALUES(3, 'Cooler Master');
+
+INSERT INTO fonte(id, nome, potencia, preco, certificacao, marca_id) VALUES(1, 'RM750x', 750, 799.90, 'GOLD', 1);
+INSERT INTO fonte(id, nome, potencia, preco, certificacao, marca_id) VALUES(2, 'SF600', 600, 650.00, 'PLATINUM', 1);
+INSERT INTO fonte(id, nome, potencia, preco, certificacao, marca_id) VALUES(3, 'PRIME TX-1000', 1000, 1890.50, 'TITANIUM', 2);
