@@ -18,6 +18,15 @@ public class MarcaServiceImpl implements MarcaService {
     @Inject
     MarcaRepository repository;
 
+    public List<MarcaResponse> buscarMarcasPorNome(String termoDeBusca) {
+    List<Marca> marcasEncontradas = repository.findByNomeContendo(termoDeBusca);
+    
+    return marcasEncontradas.stream()
+               .map(MarcaResponse::fromEntity)
+               .collect(Collectors.toList());
+}
+    
+
     @Override
     @Transactional
     public MarcaResponse create(MarcaRequest dto) {
@@ -38,11 +47,14 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
-        if (!repository.deleteById(id)) {
-            throw new NotFoundException("Marca com id " + id + " não encontrada para exclusão.");
+    public MarcaResponse delete(Long id) {
+        Marca marcaExistente = repository.findByIdOptional(id)
+            .orElseThrow(() -> new NotFoundException("Marca com ID " + id + " não encontrada para exclusão."));
+
+            MarcaResponse resposta = MarcaResponse.fromEntity(marcaExistente);
+            repository.delete(marcaExistente);
+            return resposta;
         }
-    }
 
     @Override
     public List<MarcaResponse> findAll() {

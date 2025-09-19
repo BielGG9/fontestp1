@@ -7,12 +7,8 @@ import java.util.List;
 public interface MarcaService {
 
     MarcaResponse create(MarcaRequest dto);
-
     MarcaResponse update(Long id, MarcaRequest dto);
-
-    void delete(Long id);
-
+    MarcaResponse delete(Long id);
     List<MarcaResponse> findAll();
-
     MarcaResponse findById(Long id);
 }

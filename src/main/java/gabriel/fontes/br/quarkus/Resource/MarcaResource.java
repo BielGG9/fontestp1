@@ -49,7 +49,7 @@ public class MarcaResource {
     @Path("/{id}")
     @Transactional
     public Response delete(@PathParam("id") Long id) {
-        service.delete(id);
-        return Response.noContent().build();
+        MarcaResponse marcaDeletada = service.delete(id);
+        return Response.ok(marcaDeletada).build();
     }
 }

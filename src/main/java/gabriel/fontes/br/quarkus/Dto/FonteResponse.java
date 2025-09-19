@@ -1,6 +1,7 @@
 package gabriel.fontes.br.quarkus.Dto;
 
 import gabriel.fontes.br.quarkus.Model.Fonte;
+import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
 
 public record FonteResponse(
     Long id,
@@ -8,7 +9,7 @@ public record FonteResponse(
     Integer potencia,
     double preco,
     String marca,
-    String certificacao
+    Certificacao certificacao
 ) {
     public static FonteResponse fromEntity(Fonte fonte) {
         return new FonteResponse(
@@ -17,7 +18,7 @@ public record FonteResponse(
             fonte.getPotencia(),
             fonte.getPreco(),
             fonte.getMarca().getNome(),
-            fonte.getCertificacao().toString()
+            fonte.getCertificacao()
         );
     }
 }

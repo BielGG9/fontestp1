@@ -7,5 +7,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class FonteRepository implements PanacheRepository<Fonte> {
 
+    
 }
     

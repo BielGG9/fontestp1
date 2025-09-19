@@ -23,15 +23,13 @@ public class FonteServiceImpl implements FonteService {
 
     @Inject 
     MarcaRepository marcaRepository;
-    
 
     @Override
     @Transactional 
     public FonteResponse create(FonteRequest dto) {
-        // 1. Cria uma nova entidade vazia
+     
         Fonte novaFonte = new Fonte();
 
-        // 2. Transfere os dados do DTO (record) para a entidade
         novaFonte.setNome(dto.nome());
         novaFonte.setPotencia(dto.potencia());
         novaFonte.setPreco(dto.preco());
@@ -48,7 +46,6 @@ public class FonteServiceImpl implements FonteService {
     @Override
     public List<FonteResponse> findAll() {
         
-        // Usa Stream para converter a lista de entidades 'Fonte' em uma lista de 'FonteResponse'
         return repository.listAll().stream()
                 .map(FonteResponse::fromEntity)
                 .collect(Collectors.toList());

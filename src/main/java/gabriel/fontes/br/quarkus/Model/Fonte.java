@@ -1,7 +1,6 @@
 package gabriel.fontes.br.quarkus.Model;
 
 import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -67,5 +66,4 @@ public class Fonte extends DefaultEntity {
     public void setCertificacao(Certificacao certificacao) {
         this.certificacao = certificacao;
     }
-    
 }
