@@ -62,6 +62,9 @@ public class Endereco extends DefaultEntity{
     public void setNumero(String numero) {
         this.numero = numero;
     }
+    public Cliente getCliente(){
+        return cliente;
+    }
     public void setCliente(Cliente novoCliente) {
     }
     

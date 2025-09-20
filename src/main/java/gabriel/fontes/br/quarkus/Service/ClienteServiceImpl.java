@@ -107,17 +107,17 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     
- @Override
-    @Transactional 
-    public ClienteResponse delete(Long id) {
-        Cliente clienteExistente = repository.findByIdOptional(id)
-            
-            .orElseThrow(() -> new NotFoundException("Cliente com id " + id + " nao encontrado para exclusão."));
+    @Override
+        @Transactional 
+        public ClienteResponse delete(Long id) {
+            Cliente clienteExistente = repository.findByIdOptional(id)
+                
+                .orElseThrow(() -> new NotFoundException("Cliente com id " + id + " nao encontrado para exclusão."));
 
-        ClienteResponse resposta = ClienteResponse.fromEntity(clienteExistente);
-        repository.delete(clienteExistente);
-        return resposta;
-    }
+            ClienteResponse resposta = ClienteResponse.fromEntity(clienteExistente);
+            repository.delete(clienteExistente);
+            return resposta;
+        }
 
     @Override
     public List<ClienteResponse> findAll() {
