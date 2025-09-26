@@ -6,14 +6,12 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.NotFoundException;
-import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
 import gabriel.fontes.br.quarkus.Dto.TelefoneRequest;
 import gabriel.fontes.br.quarkus.Dto.TelefoneResponse;
 import gabriel.fontes.br.quarkus.Model.Cliente;
 import gabriel.fontes.br.quarkus.Model.Telefone;
 import gabriel.fontes.br.quarkus.Repository.ClienteRepository;
 import gabriel.fontes.br.quarkus.Repository.TelefoneRepository;
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 @ApplicationScoped
 public class TelefoneServiceImpl implements TelefoneService {
@@ -85,7 +83,6 @@ public TelefoneResponse delete(Long clienteId, Long telefoneId) {
 
     @Override
     public TelefoneResponse update(Long clienteId, Long telefoneId, TelefoneRequest dto) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 }
