@@ -5,38 +5,32 @@ hide empty members
 
 ' --- Cluster Superior: Vendas e Pedidos ---
 class Pedido {
-  +id: Long
   -data: LocalDateTime
   -total: Double
 }
 
 class ItemPedido {
-  +id: Long
  -quantidade: Integer
  -precoUnitario: Double
 }
 
 class Carrinho {
-  +id: Long
   -dataCriacao: LocalDateTime
   -ultimaAtualizacao: LocalDateTime
 }
 
 class ItemCarrinho {
-  +id: Long
  -quantidade: Integer
  -precoNoMomento: Double
 }
 
 ' --- Cluster Central: Cliente e Dados Pessoais ---
 class Cliente {
-  +id: Long
   -nome: String
   -email: String
 }
 
 class Endereco {
-  +id: Long
   -rua: String
   -bairro: String
   -numero: String
@@ -44,21 +38,18 @@ class Endereco {
 }
 
 class Telefone {
-  +id: Long
   -numero: String
   -ddd: String
 }
 
 ' --- Cluster Inferior: Produtos e Fornecedores ---
 class Fonte {
-  +id: Long
   -nome: String
   -potencia: Integer
   -preco: double
 }
 
 class Marca {
-  +id: Long
   -nome: String
 }
 
@@ -71,7 +62,6 @@ enum Certificacao {
 }
 
 class Fornecedor {
-  +id: Long
   -nomeFantasia: String
   -razaoSocial: String
   -cnpj: String
