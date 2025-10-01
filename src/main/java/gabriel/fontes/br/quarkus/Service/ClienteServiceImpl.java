@@ -37,6 +37,7 @@ public class ClienteServiceImpl implements ClienteService {
         Cliente novoCliente = new Cliente();
         novoCliente.setNome(dto.nome());
         novoCliente.setEmail(dto.email());
+        novoCliente.setDataCadastro(dto.dataCadastro());
 
 
         if (dto.telefones() != null && !dto.telefones().isEmpty()) {
@@ -80,6 +81,7 @@ public class ClienteServiceImpl implements ClienteService {
 
         cliente.setNome(dto.nome());
         cliente.setEmail(dto.email());
+        cliente.setDataCadastro(dto.dataCadastro());
 
         cliente.getTelefones().clear();
         if (dto.telefones() != null) {

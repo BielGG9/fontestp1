@@ -1,95 +1,55 @@
 @startuml
 
 skinparam classAttributeIconSize 0
-hide empty members
 
-' --- Cluster Superior: Vendas e Pedidos ---
-class Pedido {
-  -data: LocalDateTime
-  -total: Double
-}
-
-class ItemPedido {
- -quantidade: Integer
- -precoUnitario: Double
-}
-
-class Carrinho {
-  -dataCriacao: LocalDateTime
-  -ultimaAtualizacao: LocalDateTime
-}
-
-class ItemCarrinho {
- -quantidade: Integer
- -precoNoMomento: Double
-}
-
-' --- Cluster Central: Cliente e Dados Pessoais ---
-class Cliente {
+abstract class Pessoa   {
   -nome: String
   -email: String
 }
 
-class Endereco {
+
+class Cliente extends Pessoa {
+  -dataCadastro: LocalDateTime
+}
+class Endereco   {
   -rua: String
-  -bairro: String
-  -numero: String
   -cep: String
 }
-
-class Telefone {
+class Telefone   {
   -numero: String
   -ddd: String
 }
-
-' --- Cluster Inferior: Produtos e Fornecedores ---
-class Fonte {
-  -nome: String
-  -potencia: Integer
-  -preco: double
+class Funcionario extends Pessoa {
+  -cargo: String
+  -dataAdmissao: LocalDate
 }
-
-class Marca {
-  -nome: String
-}
-
-enum Certificacao {
-  BRONZE
-  SILVER
-  GOLD
-  PLATINUM
-  TITANIUM
-}
-
-class Fornecedor {
-  -nomeFantasia: String
+class Fornecedor extends Pessoa {
   -razaoSocial: String
   -cnpj: String
 }
-
-class FonteFornecedor {
-  +custoAquisicao: Double
-  +dataVinculo: LocalDateTime
+class Fonte   {
+  -nome: String
+  -potencia: Integer
+  -preco: double
+  -estoque: Integer
+}
+class Marca   {
+  -nome: String
+}
+class Categoria   {
+  -nome: String
+}
+enum Certificacao {
+  + BRONZE 
+  + SILVER
+  + GOLD
 }
 
-
-' --- Relacionamentos (definidos para espelhar o layout da imagem) ---
-
-' Conexões do Cliente (Central)
 Cliente "1" *-- "*" Endereco
 Cliente "1" *-- "*" Telefone
-Cliente "1" -- "0..*" Pedido
-Cliente "1" -- "1" Carrinho
 
-' Conexões de Vendas (Superior)
-Pedido "1" *-- "1..*" ItemPedido
-Carrinho "1" *-- "0..*" ItemCarrinho
-
-' Conexões de Produtos (Inferior)
-ItemPedido "0..*" -- "1" Fonte
-ItemCarrinho "0..*" -- "1" Fonte
 Fonte "0..*" o-- "1" Marca
+Fonte "*" -- "1" Categoria
 Fonte "1" -- "1" Certificacao
-(Fonte, Fornecedor) .. FonteFornecedor
 
 @enduml

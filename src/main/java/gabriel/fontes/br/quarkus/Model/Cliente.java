@@ -1,5 +1,6 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +11,10 @@ import jakarta.persistence.CascadeType;
 
 @Entity
 @Table(name = "cliente")
-public class Cliente extends DefaultEntity{
-    
-    private String nome;
+public class Cliente extends Pessoa{
 
-    private String email;
+    private LocalDateTime dataCadastro = LocalDateTime.now();
+    
 
      @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos = new ArrayList<>(); 
@@ -22,18 +22,6 @@ public class Cliente extends DefaultEntity{
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Telefone> telefones = new ArrayList<>(); 
 
-    public String getNome() {
-        return nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
     public List<Telefone> getTelefones() {
         return telefones;
     }
@@ -48,5 +36,11 @@ public class Cliente extends DefaultEntity{
 
     public void setEnderecos(List<Endereco> enderecos) {
         this.enderecos = enderecos;
+    }
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
+    }
+    public void setDataCadastro(LocalDateTime dataCadastro) {
+        this.dataCadastro = dataCadastro;
     }
 }

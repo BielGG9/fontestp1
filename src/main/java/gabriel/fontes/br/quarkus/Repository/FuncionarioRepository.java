@@ -2,19 +2,16 @@ package gabriel.fontes.br.quarkus.Repository;
 
 import java.util.List;
 
-import gabriel.fontes.br.quarkus.Model.Fonte;
-import gabriel.fontes.br.quarkus.Model.Marca;
+import gabriel.fontes.br.quarkus.Model.Funcionario;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class FonteRepository implements PanacheRepository<Fonte> {
+public class FuncionarioRepository implements PanacheRepository<Funcionario> {
 
-    public List<Marca> findByNomeContendo(String termoDeBusca) {
+    public List<Funcionario> findByNomeContendo(String termoDeBusca) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findByNomeContendo'");
     }
-
     
 }
-    
