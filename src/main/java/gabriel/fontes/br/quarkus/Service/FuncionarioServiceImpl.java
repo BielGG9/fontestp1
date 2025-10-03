@@ -2,13 +2,8 @@ package gabriel.fontes.br.quarkus.Service;
 
 import gabriel.fontes.br.quarkus.Dto.FuncionarioRequest;
 import gabriel.fontes.br.quarkus.Dto.FuncionarioResponse;
-import gabriel.fontes.br.quarkus.Dto.MarcaRequest;
-import gabriel.fontes.br.quarkus.Dto.MarcaResponse;
 import gabriel.fontes.br.quarkus.Model.Funcionario;
-import gabriel.fontes.br.quarkus.Model.Marca;
-import gabriel.fontes.br.quarkus.Repository.FonteRepository;
 import gabriel.fontes.br.quarkus.Repository.FuncionarioRepository;
-import gabriel.fontes.br.quarkus.Repository.MarcaRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
