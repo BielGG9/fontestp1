@@ -5,7 +5,6 @@ import gabriel.fontes.br.quarkus.Model.Enums.StatusDepartamento;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,9 +18,6 @@ public class Departamento extends DefaultEntity {
 
     @Enumerated(EnumType.STRING)
     private StatusDepartamento statusDepartamento;
-
-    @ManyToOne(optional = false)
-    private Funcionario funcionario;
 
     public String getSigla() {
         return sigla;
@@ -38,8 +34,12 @@ public class Departamento extends DefaultEntity {
     public StatusDepartamento getStatusDepartamento() {
         return statusDepartamento;
     }
-    public void setStatusDepartamento(StatusDepartamento statusDepartamento) {
+    public void setStatusDepartamento(Object statusDepartamento) {
         this.statusDepartamento = statusDepartamento;
+    }
+    public static Object valueOf(String upperCase) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'valueOf'");
     }
 
 }

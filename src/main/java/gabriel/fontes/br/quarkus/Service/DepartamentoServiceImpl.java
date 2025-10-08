@@ -2,14 +2,10 @@ package gabriel.fontes.br.quarkus.Service;
 
 import gabriel.fontes.br.quarkus.Dto.DepartamentoRequest;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoResponse;
-import gabriel.fontes.br.quarkus.Dto.FonteRequest;
-import gabriel.fontes.br.quarkus.Dto.FonteResponse;
 import gabriel.fontes.br.quarkus.Model.Departamento;
-import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
 import gabriel.fontes.br.quarkus.Model.Enums.StatusDepartamento;
 import gabriel.fontes.br.quarkus.Repository.DepartamentoRepository;
-import gabriel.fontes.br.quarkus.Repository.FonteRepository;
-import gabriel.fontes.br.quarkus.Repository.MarcaRepository;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
