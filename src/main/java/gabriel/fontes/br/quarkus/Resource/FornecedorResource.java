@@ -1,9 +1,7 @@
 package gabriel.fontes.br.quarkus.Resource;
 
-import gabriel.fontes.br.quarkus.Service.FonteService;
+
 import gabriel.fontes.br.quarkus.Service.FornecedorService;
-import gabriel.fontes.br.quarkus.Dto.FonteRequest;
-import gabriel.fontes.br.quarkus.Dto.FonteResponse;
 import gabriel.fontes.br.quarkus.Dto.FornecedorRequest;
 import gabriel.fontes.br.quarkus.Dto.FornecedorResponse;
 import jakarta.inject.Inject;

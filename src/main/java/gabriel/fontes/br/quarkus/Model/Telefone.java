@@ -2,6 +2,7 @@ package gabriel.fontes.br.quarkus.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;

@@ -1,5 +1,6 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 

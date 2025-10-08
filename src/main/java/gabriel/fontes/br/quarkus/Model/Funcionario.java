@@ -1,22 +1,14 @@
 package gabriel.fontes.br.quarkus.Model;
 
-import gabriel.fontes.br.quarkus.Model.Enums.Cargo;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "funcionarios")
 public class Funcionario extends Pessoa {
 
 
-    @Enumerated(EnumType.STRING)
-    private Cargo cargo;
-
     public Funcionario() {
-    }
-
-    public Cargo getCargo() {
-        return cargo;
-    }
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
     }
 }

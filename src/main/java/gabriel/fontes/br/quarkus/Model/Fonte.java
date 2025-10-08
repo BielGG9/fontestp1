@@ -1,5 +1,6 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
 import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

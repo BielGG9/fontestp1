@@ -6,11 +6,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum  Cargo{
+public enum  StatusDepartamento{
     
-    VENDEDOR(1, "Vendedor"),
-    GERENTE(2, "Gerente"),
-    SUPERVISOR(3, "Supervisor");
+    ATIVO(1, "Ativo"),
+    INATIVO(2, "Inativo");
 
     @JsonProperty("id")
     private final int id;
@@ -18,7 +17,7 @@ public enum  Cargo{
     @JsonProperty("nome")
     private final String nome;
 
-    Cargo(int id, String nome) {
+    StatusDepartamento(int id, String nome) {
         this.id = id;
         this.nome = nome;
     }
@@ -31,8 +30,8 @@ public enum  Cargo{
         return nome;
     }
 
-    public static Cargo getById(int id) {
-        return Stream.of(Cargo.values())
+    public static StatusDepartamento getById(int id) {
+        return Stream.of(StatusDepartamento.values())
                 .filter(c -> c.getId() == id)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("ID da certificação inválido: " + id));

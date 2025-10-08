@@ -1,4 +1,4 @@
-package gabriel.fontes.br.quarkus.Model;
+package gabriel.fontes.br.quarkus.Model.Abstratc;
 
 import jakarta.persistence.MappedSuperclass;
 
