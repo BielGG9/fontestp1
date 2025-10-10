@@ -1,11 +1,8 @@
 package gabriel.fontes.br.quarkus.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
 import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Endereco extends Pessoa{
