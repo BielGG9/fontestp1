@@ -9,6 +9,12 @@ public record FuncionarioRequest(
 
     @NotBlank(message = "O email do funcionário é obrigatório")
     String email,
+
+    @NotBlank(message = "O CPF do funcionário é obrigatório")
+    String cpf,
+
+    @NotBlank(message = "O RG do funcionário é obrigatório")
+    String rg,
     
     @NotBlank(message = "O cargo do funcionário é obrigatório")
     String cargo,

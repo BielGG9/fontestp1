@@ -1,88 +1,77 @@
 package gabriel.fontes.br.quarkus.Service;
 
-import java.util.List;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.ForbiddenException;
-import jakarta.ws.rs.NotFoundException;
+import gabriel.fontes.br.quarkus.Dto.ClienteRequest;
+import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
 import gabriel.fontes.br.quarkus.Dto.TelefoneRequest;
 import gabriel.fontes.br.quarkus.Dto.TelefoneResponse;
 import gabriel.fontes.br.quarkus.Model.Cliente;
 import gabriel.fontes.br.quarkus.Model.Telefone;
 import gabriel.fontes.br.quarkus.Repository.ClienteRepository;
 import gabriel.fontes.br.quarkus.Repository.TelefoneRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class TelefoneServiceImpl implements TelefoneService {
+public class TelefoneServiceImpl implements TelefoneService{
 
     @Inject
-    ClienteRepository clienteRepository;
+    TelefoneRepository repository;
 
-    @Inject
-    TelefoneRepository telefoneRepository;
+    public List<TelefoneResponse> buscarTelefonesPorNumero(String parametroDeBusca) {
+    List<Telefone> telefonesEncontrados = repository.findByNomeContendo(parametroDeBusca);
 
+    return telefonesEncontrados.stream()
+               .map(TelefoneResponse::fromEntity)
+               .collect(Collectors.toList());
+}
+    
     @Override
     @Transactional
-    public TelefoneResponse create(Long clienteId, TelefoneRequest dto) {
-        Cliente cliente = clienteRepository.findByIdOptional(clienteId)
-            .orElseThrow(() -> new NotFoundException("Cliente com ID " + clienteId + " não encontrado."));
-
+    public TelefoneResponse create(TelefoneRequest dto) {
         Telefone novoTelefone = new Telefone();
-        mapearDtoParaEntidade(dto, novoTelefone);
-        
-        novoTelefone.setCliente(cliente);
-        telefoneRepository.persist(novoTelefone);
-
+        novoTelefone.setNumero(dto.numero());
+        novoTelefone.setDdd(dto.ddd());
+        repository.persist(novoTelefone);
         return TelefoneResponse.fromEntity(novoTelefone);
     }
 
-@Override
-@Transactional
-public TelefoneResponse delete(Long clienteId, Long telefoneId) {
-    clienteRepository.findByIdOptional(clienteId)
-        .orElseThrow(() -> new NotFoundException("Cliente com ID " + clienteId + " não encontrado."));
-
-    Telefone telefone = telefoneRepository.findByIdOptional(telefoneId)
-        .orElseThrow(() -> new NotFoundException("Telefone com ID " + telefoneId + " não encontrado."));
-
-    if (!telefone.getCliente().getId().equals(clienteId)) {
-        throw new ForbiddenException("Este telefone não pertence ao cliente informado.");
-    }
-
-    TelefoneResponse resposta = TelefoneResponse.fromEntity(telefone);
-    telefoneRepository.delete(telefone);
-    return resposta;
-}
-    
-
     @Override
-    public TelefoneResponse findById(Long clienteId, Long telefoneId) {
-        Telefone telefone = telefoneRepository.findByIdOptional(telefoneId)
-            .orElseThrow(() -> new NotFoundException("Telefone com ID " + telefoneId + " não encontrado."));
-        if (!telefone.getCliente().getId().equals(clienteId)) {
-            throw new ForbiddenException("Este telefone não pertence ao cliente informado.");
-        }
+    @Transactional
+    public TelefoneResponse update(Long id, TelefoneRequest dto) {
+        Telefone telefone = repository.findByIdOptional(id)
+                .orElseThrow(() -> new NotFoundException("Telefone com id " + id + " não encontrado."));
+        telefone.setNumero(dto.numero());
+        telefone.setDdd(dto.ddd());
         return TelefoneResponse.fromEntity(telefone);
     }
 
     @Override
-    public List<TelefoneResponse> findByClienteId(Long clienteId) {
-        Cliente cliente = clienteRepository.findByIdOptional(clienteId)
-            .orElseThrow(() -> new NotFoundException("Cliente com ID " + clienteId + " não encontrado."));
-        
-        return cliente.getTelefones().stream()
-            .map(TelefoneResponse::fromEntity)
-            .toList();
-    }
-    
-    private void mapearDtoParaEntidade(TelefoneRequest dto, Telefone entidade) {
-        entidade.setDdd(dto.ddd());
-        entidade.setNumero(dto.numero());
+    @Transactional
+    public TelefoneResponse delete(Long id) {
+        Telefone telefoneExistente = repository.findByIdOptional(id)
+            .orElseThrow(() -> new NotFoundException("Telefone com ID " + id + " não encontrado para exclusão."));
+
+        TelefoneResponse resposta = TelefoneResponse.fromEntity(telefoneExistente);
+        repository.delete(telefoneExistente);
+        return resposta;
     }
 
     @Override
-    public TelefoneResponse update(Long clienteId, Long telefoneId, TelefoneRequest dto) {
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public List<TelefoneResponse> findAll() {
+        return repository.listAll().stream()
+                .map(TelefoneResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public TelefoneResponse findById(Long id) {
+        Telefone telefone = repository.findByIdOptional(id)
+                .orElseThrow(() -> new NotFoundException("Telefone com id " + id + " não encontrado."));
+        return TelefoneResponse.fromEntity(telefone);
     }
 }

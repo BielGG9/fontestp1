@@ -2,12 +2,18 @@
 
 skinparam classAttributeIconSize 0
 
+
+class PessoaFisica extends Pessoa {
+  -cpf: String
+  -rg: String
+}
+
 abstract class Pessoa {
   -nome: String
   -email: String
 }
 
-class Cliente extends Pessoa {
+class Cliente {
   -dataCadastro: LocalDateTime
 }
 class Endereco {
@@ -23,11 +29,7 @@ Class Departamento {
   -sigla: String
   -descricao: String
 }
-enum StatusDepartamento {
-  + ATIVO
-  + INATIVO
-}
-class Funcionario extends Pessoa {
+class Funcionario  {
   -cargo: String
   -dataAdmissao: LocalDate
 }
@@ -45,18 +47,24 @@ class Marca {
   -nome: String
 }
 enum Certificacao {
-  + BRONZE
-  + SILVER
-  + GOLD
+  + BRONZE: int
+  + SILVER: int
+  + GOLD: int 
 }
+class Modelo {
+  -numeracao: int
+  
+  }
 
-Cliente "1" *-- "*" Endereco
-Cliente "1" *-- "*" Telefone
-Funcionario "0..*" -- "1" Departamento
-Fonte "0..*" o-- "1" Marca
-Fonte "1" -- "1" Certificacao
-
-Departamento "1" o-right--- "1" StatusDepartamento
+Pessoa "1" *--> "*" Endereco
+Pessoa "1" *--> "*" Telefone
+Cliente "1" --> "1" PessoaFisica
+Funcionario "*" --> "1" Departamento
+Funcionario "1" --> "1" PessoaFisica
+Fonte "*" --> "1" Modelo
+Fonte "*" --> "1" Certificacao
+Fonte "*" --> "*" Fornecedor
+Modelo "*" --> "1" Marca
 
 
 @enduml

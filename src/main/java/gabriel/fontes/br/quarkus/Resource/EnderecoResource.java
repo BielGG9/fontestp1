@@ -1,15 +1,17 @@
 package gabriel.fontes.br.quarkus.Resource;
 
+
+import gabriel.fontes.br.quarkus.Service.EnderecoService;
+import gabriel.fontes.br.quarkus.Dto.EnderecoRequest;
+import gabriel.fontes.br.quarkus.Dto.EnderecoResponse;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
 
-import gabriel.fontes.br.quarkus.Dto.EnderecoRequest;
-import gabriel.fontes.br.quarkus.Service.EnderecoService;
-
-@Path("/clientes/{clienteId}/enderecos")
+@Path("/enderecos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class EnderecoResource {
@@ -18,35 +20,43 @@ public class EnderecoResource {
     EnderecoService service;
 
     @POST
-    public Response create(@PathParam("clienteId") Long clienteId, EnderecoRequest dto) {
-        var response = service.create(clienteId, dto);
-        return Response.status(Status.CREATED).entity(response).build();
+    @Transactional
+    public Response cadastrarEndereco(EnderecoRequest enderecoRequest) {
+
+        EnderecoResponse enderecoCriado = service.create(enderecoRequest);
+        return Response.status(Response.Status.CREATED).entity(enderecoCriado).build();
     }
 
-    @PUT
-    @Path("/{enderecoId}")
-    public Response update(@PathParam("clienteId") Long clienteId, @PathParam("enderecoId") Long enderecoId, EnderecoRequest dto) {
-        var response = service.update(clienteId, enderecoId, dto);
-        return Response.ok(response).build();
+    @GET
+    public Response listarEnderecos() {
+
+        List<EnderecoResponse> lista = service.findAll();
+        return Response.ok(lista).build();
+    }
+    
+    @GET
+    @Path("/{id}")
+    public Response buscarPorId(@PathParam("id") Long id) {
+
+        EnderecoResponse endereco = service.findById(id);
+        return Response.ok(endereco).build();
     }
 
     @DELETE
-    @Path("/{enderecoId}")
-    public Response delete(@PathParam("clienteId") Long clienteId, @PathParam("enderecoId") Long enderecoId) {
-        service.delete(clienteId, enderecoId);
-        return Response.noContent().build();
+    @Path("/{id}")
+    @Transactional
+    public Response deletarEndereco(@PathParam("id") Long id) {
+
+        EnderecoResponse enderecoDeletado = service.delete(id);
+        return Response.ok(enderecoDeletado).build();
     }
 
-    @GET
-    public Response findByClienteId(@PathParam("clienteId") Long clienteId) {
-        var response = service.findByClienteId(clienteId);
-        return Response.ok(response).build();
-    }
+    @PUT
+    @Path("/{id}")
+    @Transactional
+    public Response atualizarEndereco(@PathParam("id") Long id, EnderecoRequest enderecoRequest) {
 
-    @GET
-    @Path("/{enderecoId}")
-    public Response findById(@PathParam("clienteId") Long clienteId, @PathParam("enderecoId") Long enderecoId) {
-        var response = service.findById(clienteId, enderecoId);
-        return Response.ok(response).build();
+        EnderecoResponse enderecoAtualizado = service.update(id, enderecoRequest);
+        return Response.ok(enderecoAtualizado).build();
     }
 }

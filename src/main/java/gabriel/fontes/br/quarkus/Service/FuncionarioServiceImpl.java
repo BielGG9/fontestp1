@@ -4,7 +4,6 @@ import gabriel.fontes.br.quarkus.Dto.FuncionarioRequest;
 import gabriel.fontes.br.quarkus.Dto.FuncionarioResponse;
 import gabriel.fontes.br.quarkus.Model.Departamento;
 import gabriel.fontes.br.quarkus.Model.Funcionario;
-import gabriel.fontes.br.quarkus.Model.Enums.StatusDepartamento;
 import gabriel.fontes.br.quarkus.Repository.FuncionarioRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -38,7 +37,6 @@ public class FuncionarioServiceImpl implements FuncionarioService{
         novoFuncionario.setCargo(dto.cargo());
         Departamento departamento = new Departamento();
         novoFuncionario.setDepartamento(departamento);
-        departamento.setStatusDepartamento(StatusDepartamento.valueOf(dto.departamento().toUpperCase()));
         repository.persist(novoFuncionario);
         return FuncionarioResponse.fromEntity(novoFuncionario);
     }

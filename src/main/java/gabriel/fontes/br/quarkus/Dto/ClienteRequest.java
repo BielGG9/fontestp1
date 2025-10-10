@@ -1,10 +1,8 @@
 package gabriel.fontes.br.quarkus.Dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.Valid; 
 
 public record ClienteRequest(
     @NotBlank(message = "O nome não pode ser vazio")
@@ -13,12 +11,12 @@ public record ClienteRequest(
     @NotBlank(message = "O email não pode ser vazio")
     String email,
 
-    LocalDateTime dataCadastro,
+    @NotBlank(message = "O CPF não pode ser vazio")
+    String cpf,
 
-    @Valid 
-    List<TelefoneRequest> telefones,
+    @NotBlank(message = "O RG não pode ser vazio")
+    String rg,
 
-    @Valid 
-    List<EnderecoRequest> enderecos
+    LocalDateTime dataCadastro
     
 ) {}

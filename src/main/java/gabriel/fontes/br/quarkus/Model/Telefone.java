@@ -3,27 +3,19 @@ package gabriel.fontes.br.quarkus.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
+import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "telefones")
-public class Telefone extends DefaultEntity{
+public class Telefone extends Pessoa{
 
-    @ManyToOne
-    @JsonIgnore
-    private Cliente cliente;
 
     private String numero;
     private String ddd;
 
-    public Cliente getCliente() {
-        return cliente;
-    }
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
     public String getNumero() {
         return numero;
     }

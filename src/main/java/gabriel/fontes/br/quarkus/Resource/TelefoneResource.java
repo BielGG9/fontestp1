@@ -1,15 +1,17 @@
 package gabriel.fontes.br.quarkus.Resource;
 
+
+import gabriel.fontes.br.quarkus.Service.TelefoneService;
+import gabriel.fontes.br.quarkus.Dto.TelefoneRequest;
+import gabriel.fontes.br.quarkus.Dto.TelefoneResponse;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
+import java.util.List;
 
-import gabriel.fontes.br.quarkus.Dto.TelefoneRequest;
-import gabriel.fontes.br.quarkus.Service.TelefoneService;
-
-@Path("/clientes/{clienteId}/telefones")
+@Path("/telefones")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class TelefoneResource {
@@ -18,35 +20,43 @@ public class TelefoneResource {
     TelefoneService service;
 
     @POST
-    public Response create(@PathParam("clienteId") Long clienteId, TelefoneRequest dto) {
-        var response = service.create(clienteId, dto);
-        return Response.status(Status.CREATED).entity(response).build();
+    @Transactional
+    public Response cadastrarTelefone(TelefoneRequest telefoneRequest) {
+
+        TelefoneResponse telefoneCriado = service.create(telefoneRequest);
+        return Response.status(Response.Status.CREATED).entity(telefoneCriado).build();
     }
 
-    @PUT
-    @Path("/{telefoneId}")
-    public Response update(@PathParam("clienteId") Long clienteId, @PathParam("telefoneId") Long telefoneId, TelefoneRequest dto) {
-        var response = service.update(clienteId, telefoneId, dto);
-        return Response.ok(response).build();
+    @GET
+    public Response listarTelefones() {
+
+        List<TelefoneResponse> lista = service.findAll();
+        return Response.ok(lista).build();
+    }
+    
+    @GET
+    @Path("/{id}")
+    public Response buscarPorId(@PathParam("id") Long id) {
+
+        TelefoneResponse telefone = service.findById(id);
+        return Response.ok(telefone).build();
     }
 
     @DELETE
-    @Path("/{telefoneId}")
-    public Response delete(@PathParam("clienteId") Long clienteId, @PathParam("telefoneId") Long telefoneId) {
-        service.delete(clienteId, telefoneId);
-        return Response.noContent().build();
+    @Path("/{id}")
+    @Transactional
+    public Response deletarTelefone(@PathParam("id") Long id) {
+
+        TelefoneResponse telefoneDeletado = service.delete(id);
+        return Response.ok(telefoneDeletado).build();
     }
 
-    @GET
-    public Response findByClienteId(@PathParam("clienteId") Long clienteId) {
-        var response = service.findByClienteId(clienteId);
-        return Response.ok(response).build();
-    }
+    @PUT
+    @Path("/{id}")
+    @Transactional
+    public Response atualizarTelefone(@PathParam("id") Long id, TelefoneRequest telefoneRequest) {
 
-    @GET
-    @Path("/{telefoneId}")
-    public Response findById(@PathParam("clienteId") Long clienteId, @PathParam("telefoneId") Long telefoneId) {
-        var response = service.findById(clienteId, telefoneId);
-        return Response.ok(response).build();
+        TelefoneResponse telefoneAtualizado = service.update(id, telefoneRequest);
+        return Response.ok(telefoneAtualizado).build();
     }
-}   
+}

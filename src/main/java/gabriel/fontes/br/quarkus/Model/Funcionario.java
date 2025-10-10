@@ -1,5 +1,6 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
 import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -8,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "funcionarios")
-public class Funcionario extends Pessoa {
+public class Funcionario extends PessoaFisica {
 
 
     private String cargo;

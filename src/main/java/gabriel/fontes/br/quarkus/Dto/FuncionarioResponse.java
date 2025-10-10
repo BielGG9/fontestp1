@@ -4,6 +4,8 @@ public record FuncionarioResponse(
     Long id,
     String email,
     String nome,
+    String cpf,
+    String rg,
     String cargo,
     String departamento
 ) {
@@ -15,6 +17,8 @@ public record FuncionarioResponse(
             funcionario.getId(),
             funcionario.getEmail(),
             funcionario.getNome(),
+            funcionario.getCpf(),
+            funcionario.getRg(),
             funcionario.getCargo(),
             nomeDepartamento
         );

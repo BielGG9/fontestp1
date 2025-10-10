@@ -3,11 +3,12 @@ package gabriel.fontes.br.quarkus.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
+import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Endereco extends DefaultEntity{
+public class Endereco extends Pessoa{
 
     private String rua;
     private String bairro;
@@ -16,10 +17,6 @@ public class Endereco extends DefaultEntity{
     private String cidade;
     private String estado;
     private String cep;
-
-    @ManyToOne
-    @JsonIgnore
-    private Cliente cliente;
 
     public String getRua() {
         return rua;
@@ -63,10 +60,6 @@ public class Endereco extends DefaultEntity{
     public void setNumero(String numero) {
         this.numero = numero;
     }
-    public Cliente getCliente(){
-        return cliente;
-    }
-    public void setCliente(Cliente novoCliente) {
-    }
+
     
 }

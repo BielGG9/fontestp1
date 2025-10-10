@@ -12,32 +12,11 @@ import jakarta.persistence.CascadeType;
 
 @Entity
 @Table(name = "cliente")
-public class Cliente extends Pessoa{
+public class Cliente extends PessoaFisica {
 
     private LocalDateTime dataCadastro = LocalDateTime.now();
     
 
-     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Endereco> enderecos = new ArrayList<>(); 
-
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Telefone> telefones = new ArrayList<>(); 
-
-    public List<Telefone> getTelefones() {
-        return telefones;
-    }
-
-       public void setTelefones(List<Telefone> telefones) {
-        this.telefones = telefones;
-    }
-
-    public List<Endereco> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<Endereco> enderecos) {
-        this.enderecos = enderecos;
-    }
     public LocalDateTime getDataCadastro() {
         return dataCadastro;
     }

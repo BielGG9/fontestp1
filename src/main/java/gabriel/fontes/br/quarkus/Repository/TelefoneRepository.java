@@ -19,4 +19,4 @@ public class TelefoneRepository implements PanacheRepository<Telefone> {
         String parametroDeBusca = "%" + texto.toUpperCase() + "%"; // Adicionamos os '%' e convertemos para maiúsculo
                 return find("upper(nome) LIKE ?1", parametroDeBusca).list();
     }
-}
+    }

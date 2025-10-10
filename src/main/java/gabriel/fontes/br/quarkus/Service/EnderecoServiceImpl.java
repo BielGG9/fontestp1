@@ -1,106 +1,77 @@
 package gabriel.fontes.br.quarkus.Service;
 
-import java.util.List;
+import gabriel.fontes.br.quarkus.Dto.EnderecoRequest;
+import gabriel.fontes.br.quarkus.Dto.EnderecoResponse;
+import gabriel.fontes.br.quarkus.Model.Endereco;
+import gabriel.fontes.br.quarkus.Repository.EnderecoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.NotFoundException;
 
-import gabriel.fontes.br.quarkus.Dto.EnderecoRequest;
-import gabriel.fontes.br.quarkus.Dto.EnderecoResponse;
-import gabriel.fontes.br.quarkus.Model.Cliente;
-import gabriel.fontes.br.quarkus.Model.Endereco;
-import gabriel.fontes.br.quarkus.Repository.ClienteRepository;
-import gabriel.fontes.br.quarkus.Repository.EnderecoRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class EnderecoServiceImpl implements EnderecoService {
+public class EnderecoServiceImpl implements EnderecoService{
 
     @Inject
-    ClienteRepository clienteRepository;
+    EnderecoRepository repository;
 
-    @Inject
-    EnderecoRepository enderecoRepository;
+    public List<EnderecoResponse> buscarEnderecosPorNome(String parametroDeBusca) {
+    List<Endereco> enderecosEncontrados = repository.findByNomeContendo(parametroDeBusca);
 
+    return enderecosEncontrados.stream()
+               .map(EnderecoResponse::fromEntity)
+               .collect(Collectors.toList());
+}
+    
     @Override
     @Transactional
-    public EnderecoResponse create(Long clienteId, EnderecoRequest dto) {
-        Cliente cliente = clienteRepository.findByIdOptional(clienteId)
-            .orElseThrow(() -> new NotFoundException("Cliente com ID " + clienteId + " não encontrado."));
-
+    public EnderecoResponse create(EnderecoRequest dto) {
         Endereco novoEndereco = new Endereco();
-        mapearDtoParaEntidade(dto, novoEndereco);
-        
-        novoEndereco.setCliente(cliente);
-        enderecoRepository.persist(novoEndereco);
-
+        novoEndereco.setRua(dto.rua());
+        novoEndereco.setNumero(dto.numero());
+        novoEndereco.setCidade(dto.cidade());
+        novoEndereco.setEstado(dto.estado());
+        repository.persist(novoEndereco);
         return EnderecoResponse.fromEntity(novoEndereco);
     }
 
     @Override
     @Transactional
-    public EnderecoResponse update(Long clienteId, Long enderecoId, EnderecoRequest dto) {
-        clienteRepository.findByIdOptional(clienteId)
-            .orElseThrow(() -> new NotFoundException("Cliente com ID " + clienteId + " não encontrado."));
-        
-        Endereco endereco = enderecoRepository.findByIdOptional(enderecoId)
-            .orElseThrow(() -> new NotFoundException("Endereço com ID " + enderecoId + " não encontrado."));
-
-        if (!endereco.getCliente().getId().equals(clienteId)) {
-            throw new ForbiddenException("Este endereço não pertence ao cliente informado.");
-        }
-
-        mapearDtoParaEntidade(dto, endereco);
-        return EnderecoResponse.fromEntity(endereco);
-    }
-
-@Override
-@Transactional
-public EnderecoResponse delete(Long clienteId, Long enderecoId) {
-    clienteRepository.findByIdOptional(clienteId)
-        .orElseThrow(() -> new NotFoundException("Cliente com ID " + clienteId + " não encontrado."));
-
-    Endereco endereco = enderecoRepository.findByIdOptional(enderecoId)
-        .orElseThrow(() -> new NotFoundException("Endereço com ID " + enderecoId + " não encontrado."));
-
-    if (!endereco.getCliente().getId().equals(clienteId)) {
-        throw new ForbiddenException("Este endereço não pertence ao cliente informado.");
-    }
-
-    EnderecoResponse resposta = EnderecoResponse.fromEntity(endereco);
-    enderecoRepository.delete(endereco);
-    return resposta;
-}
-
-
-    @Override
-    public EnderecoResponse findById(Long clienteId, Long enderecoId) {
-        Endereco endereco = enderecoRepository.findByIdOptional(enderecoId)
-            .orElseThrow(() -> new NotFoundException("Endereço com ID " + enderecoId + " não encontrado."));
-        if (!endereco.getCliente().getId().equals(clienteId)) {
-            throw new ForbiddenException("Este endereço não pertence ao cliente informado.");
-        }
+    public EnderecoResponse update(Long id, EnderecoRequest dto) {
+        Endereco endereco = repository.findByIdOptional(id)
+                .orElseThrow(() -> new NotFoundException("Endereco com id " + id + " não encontrado."));
+        endereco.setRua(dto.rua());
+        endereco.setNumero(dto.numero());
+        endereco.setCidade(dto.cidade());
+        endereco.setEstado(dto.estado());
         return EnderecoResponse.fromEntity(endereco);
     }
 
     @Override
-    public List<EnderecoResponse> findByClienteId(Long clienteId) {
-        Cliente cliente = clienteRepository.findByIdOptional(clienteId)
-            .orElseThrow(() -> new NotFoundException("Cliente com ID " + clienteId + " não encontrado."));
-        
-        return cliente.getEnderecos().stream()
-            .map(EnderecoResponse::fromEntity)
-            .toList();
+    @Transactional
+    public EnderecoResponse delete(Long id) {
+        Endereco enderecoExistente = repository.findByIdOptional(id)
+            .orElseThrow(() -> new NotFoundException("Endereco com ID " + id + " não encontrado para exclusão."));
+
+        EnderecoResponse resposta = EnderecoResponse.fromEntity(enderecoExistente);
+        repository.delete(enderecoExistente);
+        return resposta;
     }
-    
-    private void mapearDtoParaEntidade(EnderecoRequest dto, Endereco entidade) {
-        entidade.setRua(dto.rua());
-        entidade.setBairro(dto.bairro());
-        entidade.setNumero(dto.numero());
-        entidade.setComplemento(dto.complemento());
-        entidade.setCidade(dto.cidade());
-        entidade.setEstado(dto.estado());
-        entidade.setCep(dto.cep());
+
+    @Override
+    public List<EnderecoResponse> findAll() {
+        return repository.listAll().stream()
+                .map(EnderecoResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public EnderecoResponse findById(Long id) {
+        Endereco endereco = repository.findByIdOptional(id)
+                .orElseThrow(() -> new NotFoundException("Endereco com id " + id + " não encontrado."));
+        return EnderecoResponse.fromEntity(endereco);
     }
 }

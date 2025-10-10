@@ -3,7 +3,6 @@ package gabriel.fontes.br.quarkus.Service;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoRequest;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoResponse;
 import gabriel.fontes.br.quarkus.Model.Departamento;
-import gabriel.fontes.br.quarkus.Model.Enums.StatusDepartamento;
 import gabriel.fontes.br.quarkus.Repository.DepartamentoRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -62,7 +61,6 @@ public class DepartamentoServiceImpl implements DepartamentoService {
 
         departamentoExistente.setSigla(dto.sigla());
         departamentoExistente.setDescricao(dto.descricao());
-        departamentoExistente.setStatusDepartamento(StatusDepartamento.valueOf(dto.statusDepartamento().toUpperCase()));
 
 
         return DepartamentoResponse.fromEntity(departamentoExistente);
