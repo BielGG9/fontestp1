@@ -7,7 +7,8 @@ public record FornecedorResponse (
     String nome,
     String email,
     String razaoSocial,
-    String cnpj
+    String cnpj,
+    String inscricaoEstadual
 ) {
     
     public static FornecedorResponse fromEntity(Fornecedor fornecedor) {
@@ -16,7 +17,8 @@ public record FornecedorResponse (
            fornecedor.getNome(),
             fornecedor.getEmail(),
             fornecedor.getRazaoSocial(),
-            fornecedor.getCnpj()
+            fornecedor.getCnpj(),
+            fornecedor.getInscricaoEstadual()   
         );
     }
 }

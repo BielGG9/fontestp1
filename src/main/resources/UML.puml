@@ -8,12 +8,17 @@ class PessoaFisica extends Pessoa {
   -rg: String
 }
 
+class PessoaJuridica extends Pessoa {
+  -cnpj: String
+  -inscricaoEstadual: String
+}
+
 abstract class Pessoa {
   -nome: String
   -email: String
 }
 
-class Cliente {
+class Cliente extends PessoaFisica{
   -dataCadastro: LocalDateTime
 }
 class Endereco {
@@ -29,13 +34,12 @@ Class Departamento {
   -sigla: String
   -descricao: String
 }
-class Funcionario  {
+class Funcionario extends PessoaFisica {
   -cargo: String
   -dataAdmissao: LocalDate
 }
-class Fornecedor extends Pessoa {
+class Fornecedor extends PessoaJuridica {
   -razaoSocial: String
-  -cnpj: String
 }
 class Fonte {
   -nome: String
@@ -58,9 +62,7 @@ class Modelo {
 
 Pessoa "1" *--> "*" Endereco
 Pessoa "1" *--> "*" Telefone
-Cliente "1" --> "1" PessoaFisica
 Funcionario "*" --> "1" Departamento
-Funcionario "1" --> "1" PessoaFisica
 Fonte "*" --> "1" Modelo
 Fonte "*" --> "1" Certificacao
 Fonte "*" --> "*" Fornecedor

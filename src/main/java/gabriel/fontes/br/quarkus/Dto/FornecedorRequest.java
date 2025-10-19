@@ -14,6 +14,9 @@ public record FornecedorRequest(
     String razaoSocial,
 
     @NotBlank(message = "O CNPJ do fornecedor é obrigatório.")
-    String cnpj
+    String cnpj,
+
+    @NotBlank(message = "A inscrição estadual do fornecedor é obrigatória.")
+    String inscricaoEstadual
     
 ) {}

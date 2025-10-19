@@ -1,12 +1,8 @@
 package gabriel.fontes.br.quarkus.Service;
 
-import gabriel.fontes.br.quarkus.Dto.ClienteRequest;
-import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
 import gabriel.fontes.br.quarkus.Dto.TelefoneRequest;
 import gabriel.fontes.br.quarkus.Dto.TelefoneResponse;
-import gabriel.fontes.br.quarkus.Model.Cliente;
 import gabriel.fontes.br.quarkus.Model.Telefone;
-import gabriel.fontes.br.quarkus.Repository.ClienteRepository;
 import gabriel.fontes.br.quarkus.Repository.TelefoneRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

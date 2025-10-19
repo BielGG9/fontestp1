@@ -1,10 +1,15 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import java.util.List;
+
 import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
 import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -18,6 +23,14 @@ public class Fonte extends DefaultEntity {
     private Integer potencia;
 
     private double preco;
+
+    @ManyToMany
+    @JoinTable(
+    name = "fonte_fornecedor", 
+    joinColumns = @JoinColumn(name = "fonte_id"),
+    inverseJoinColumns = @JoinColumn(name = "fornecedor_id")
+)
+private List<Fornecedor> fornecedores;
 
     @ManyToOne(optional = false)
     private Marca marca;

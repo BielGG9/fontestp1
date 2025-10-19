@@ -1,12 +1,9 @@
 package gabriel.fontes.br.quarkus.Service;
 
-import gabriel.fontes.br.quarkus.Dto.FornecedorRequest;
-import gabriel.fontes.br.quarkus.Dto.FornecedorResponse;
+
 import gabriel.fontes.br.quarkus.Dto.PessoaFisicaRequest;
 import gabriel.fontes.br.quarkus.Dto.PessoaFisicaResponse;
-import gabriel.fontes.br.quarkus.Model.Fornecedor;
 import gabriel.fontes.br.quarkus.Model.PessoaFisica;
-import gabriel.fontes.br.quarkus.Repository.FornecedorRepository;
 import gabriel.fontes.br.quarkus.Repository.PessoaFisicaRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
