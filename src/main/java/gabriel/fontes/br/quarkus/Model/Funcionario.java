@@ -5,10 +5,11 @@ import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "funcionarios")
+@PrimaryKeyJoinColumn(name = "id")
 public class Funcionario extends PessoaFisica {
 
 

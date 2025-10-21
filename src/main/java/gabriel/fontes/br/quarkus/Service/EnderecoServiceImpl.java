@@ -13,27 +13,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class EnderecoServiceImpl implements EnderecoService{
+public class EnderecoServiceImpl implements EnderecoService {
 
     @Inject
     EnderecoRepository repository;
 
-    public List<EnderecoResponse> buscarEnderecosPorNome(String parametroDeBusca) {
-    List<Endereco> enderecosEncontrados = repository.findByNomeContendo(parametroDeBusca);
+    public List<EnderecoResponse> buscarEnderecosPorRua(String parametroDeBusca) {
+        List<Endereco> enderecosEncontrados = repository.findByNomeContendo(parametroDeBusca); // Ajustar query se necessário
 
-    return enderecosEncontrados.stream()
-               .map(EnderecoResponse::fromEntity)
-               .collect(Collectors.toList());
-}
-    
+        return enderecosEncontrados.stream()
+                .map(EnderecoResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
     @Override
     @Transactional
     public EnderecoResponse create(EnderecoRequest dto) {
         Endereco novoEndereco = new Endereco();
         novoEndereco.setRua(dto.rua());
         novoEndereco.setNumero(dto.numero());
+        novoEndereco.setComplemento(dto.complemento());
+        novoEndereco.setBairro(dto.bairro());
         novoEndereco.setCidade(dto.cidade());
         novoEndereco.setEstado(dto.estado());
+        novoEndereco.setCep(dto.cep());
+
         repository.persist(novoEndereco);
         return EnderecoResponse.fromEntity(novoEndereco);
     }
@@ -43,10 +47,15 @@ public class EnderecoServiceImpl implements EnderecoService{
     public EnderecoResponse update(Long id, EnderecoRequest dto) {
         Endereco endereco = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Endereco com id " + id + " não encontrado."));
+
         endereco.setRua(dto.rua());
         endereco.setNumero(dto.numero());
+        endereco.setComplemento(dto.complemento());
+        endereco.setBairro(dto.bairro());
         endereco.setCidade(dto.cidade());
         endereco.setEstado(dto.estado());
+        endereco.setCep(dto.cep());
+
         return EnderecoResponse.fromEntity(endereco);
     }
 

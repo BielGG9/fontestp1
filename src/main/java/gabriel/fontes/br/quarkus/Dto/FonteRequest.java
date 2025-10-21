@@ -16,6 +16,9 @@ public record FonteRequest(
     @Positive(message = "O preço deve ser um número positivo")
     double preco,
 
+    @Positive(message = "O estoque deve ser um número positivo")
+    Integer estoque,
+
     @NotNull(message = "O id da marca não pode ser nulo")
     @Positive(message = "O id da marca deve ser um número positivo")
     Long idMarca,

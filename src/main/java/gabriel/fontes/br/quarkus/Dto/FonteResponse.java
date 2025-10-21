@@ -8,6 +8,7 @@ public record FonteResponse(
     String nome,
     Integer potencia,
     double preco,
+    Integer estoque,
     String marca,
     Certificacao certificacao
 ) {
@@ -17,6 +18,7 @@ public record FonteResponse(
             fonte.getNome(),
             fonte.getPotencia(),
             fonte.getPreco(),
+            fonte.getEstoque(),
             fonte.getMarca().getNome(),
             fonte.getCertificacao()
         );

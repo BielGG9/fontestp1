@@ -1,20 +1,26 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
-import gabriel.fontes.br.quarkus.Model.Jpa.PessoaJuridica;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 
 
 @Entity
-@Table(name = "fornecedores")
+@PrimaryKeyJoinColumn(name = "id")
 public class Fornecedor extends PessoaJuridica{
 
 
     private String razaoSocial;
-    
+
+    @ManyToMany(mappedBy = "fornecedores")
+    private List<Fonte> fontes;
+
     public Fornecedor() {
     }
 

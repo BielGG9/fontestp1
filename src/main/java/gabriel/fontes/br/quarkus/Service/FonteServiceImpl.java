@@ -33,6 +33,7 @@ public class FonteServiceImpl implements FonteService {
         novaFonte.setNome(dto.nome());
         novaFonte.setPotencia(dto.potencia());
         novaFonte.setPreco(dto.preco());
+        novaFonte.setEstoque(dto.estoque());
         Marca marca = marcaRepository.findById(dto.idMarca());
         novaFonte.setMarca(marca);
         novaFonte.setCertificacao(Certificacao.valueOf(dto.certificacao().toUpperCase()));
@@ -73,6 +74,7 @@ public class FonteServiceImpl implements FonteService {
         fonteExistente.setNome(dto.nome());
         fonteExistente.setPotencia(dto.potencia());
         fonteExistente.setPreco(dto.preco());
+        fonteExistente.setEstoque(dto.estoque());
         Marca marca = marcaRepository.findById(dto.idMarca());
         fonteExistente.setMarca(marca);
         fonteExistente.setCertificacao(Certificacao.valueOf(dto.certificacao().toUpperCase()));

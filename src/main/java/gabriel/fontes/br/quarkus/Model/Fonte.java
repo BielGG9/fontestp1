@@ -23,6 +23,7 @@ public class Fonte extends DefaultEntity {
     private Integer potencia;
 
     private double preco;
+    private Integer estoque;
 
     @ManyToMany
     @JoinTable(
@@ -67,6 +68,12 @@ private List<Fornecedor> fornecedores;
     }
     public void setPreco(double preco) {
         this.preco = preco;
+    }
+    public Integer getEstoque() {
+        return estoque;
+    }
+    public void setEstoque(Integer estoque) {
+        this.estoque = estoque;
     }
     public Marca getMarca() {
         return marca;
