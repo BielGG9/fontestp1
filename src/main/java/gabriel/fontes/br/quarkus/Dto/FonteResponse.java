@@ -9,7 +9,7 @@ public record FonteResponse(
     Integer potencia,
     double preco,
     Integer estoque,
-    String marca,
+    String Modelo,
     Certificacao certificacao
 ) {
     public static FonteResponse fromEntity(Fonte fonte) {
@@ -19,7 +19,7 @@ public record FonteResponse(
             fonte.getPotencia(),
             fonte.getPreco(),
             fonte.getEstoque(),
-            fonte.getMarca().getNome(),
+            fonte.getModelo().getMarca().getNome(),
             fonte.getCertificacao()
         );
     }

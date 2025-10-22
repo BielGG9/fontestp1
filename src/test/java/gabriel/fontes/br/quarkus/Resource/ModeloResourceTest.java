@@ -4,22 +4,23 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
-import gabriel.fontes.br.quarkus.Dto.MarcaRequest;
+import gabriel.fontes.br.quarkus.Dto.ModeloRequest;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
 
 @QuarkusTest
-public class MarcaResourceTest {
+public class ModeloResourceTest {
 
+    private static final Long EXISTING_MODELO_ID = 1L;
+    private static final Long NON_EXISTING_MODELO_ID = 999L;
     private static final Long EXISTING_MARCA_ID = 1L;
-    private static final Long NON_EXISTING_MARCA_ID = 999L;
 
     @Test
     public void testFindAllEndpoint() {
         given()
-                .when().get("/marca")
+                .when().get("/modelos")
                 .then()
                 .statusCode(200)
                 .body("size()", greaterThan(0));
@@ -28,88 +29,85 @@ public class MarcaResourceTest {
     @Test
     public void testFindByIdEndpointFound() {
         given()
-                .pathParam("id", EXISTING_MARCA_ID)
-                .when().get("/marca/{id}")
+                .pathParam("id", EXISTING_MODELO_ID)
+                .when().get("/modelos/{id}")
                 .then()
                 .statusCode(200)
-                .body("id", is(EXISTING_MARCA_ID.intValue()))
-                .body("nome", is("Corsair"));
+                .body("id", is(EXISTING_MODELO_ID.intValue()))
+                .body("numeracao", is(750));
     }
 
-     @Test
+    @Test
     public void testFindByIdEndpointNotFound() {
         given()
-                .pathParam("id", NON_EXISTING_MARCA_ID)
-                .when().get("/marca/{id}")
+                .pathParam("id", NON_EXISTING_MODELO_ID)
+                .when().get("/modelos/{id}")
                 .then()
                 .statusCode(404);
     }
 
     @Test
     public void testCreateEndpoint() {
-        MarcaRequest requestDto = new MarcaRequest("Nova Marca Teste");
+        ModeloRequest requestDto = new ModeloRequest(850, EXISTING_MARCA_ID);
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
-                .when().post("/marca")
+                .when().post("/modelos")
                 .then()
                 .statusCode(201)
-                .body("nome", is("Nova Marca Teste"));
+                .body("numeracao", is(850))
+                .body("marca", is("Corsair"));
     }
 
     @Test
     public void testUpdateEndpoint() {
-        MarcaRequest requestDto = new MarcaRequest("Marca Atualizada");
+        ModeloRequest requestDto = new ModeloRequest(900, EXISTING_MARCA_ID);
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
-                .pathParam("id", EXISTING_MARCA_ID)
-                .when().put("/marca/{id}")
+                .pathParam("id", EXISTING_MODELO_ID)
+                .when().put("/modelos/{id}")
                 .then()
                 .statusCode(200)
-                .body("id", is(EXISTING_MARCA_ID.intValue()))
-                .body("nome", is("Marca Atualizada"));
+                .body("id", is(EXISTING_MODELO_ID.intValue()))
+                .body("numeracao", is(900));
     }
 
     @Test
     public void testUpdateEndpointNotFound() {
-         MarcaRequest requestDto = new MarcaRequest("Nome");
-         given()
+        ModeloRequest requestDto = new ModeloRequest(100, EXISTING_MARCA_ID);
+        given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
-                .pathParam("id", NON_EXISTING_MARCA_ID)
-                .when().put("/marca/{id}")
+                .pathParam("id", NON_EXISTING_MODELO_ID)
+                .when().put("/modelos/{id}")
                 .then()
                 .statusCode(404);
     }
 
     @Test
     public void testDeleteEndpoint() {
-         // Crie uma marca para deletar
-         MarcaRequest createDto = new MarcaRequest("Marca Para Deletar");
+         ModeloRequest createDto = new ModeloRequest(1200, EXISTING_MARCA_ID);
          var response = given()
                             .contentType(ContentType.JSON)
                             .body(createDto)
-                            .when().post("/marca")
+                            .when().post("/modelos")
                             .then()
                             .statusCode(201)
                             .extract().response();
          Long idToDelete = response.jsonPath().getLong("id");
 
-         // Delete
-         given()
+        given()
                 .pathParam("id", idToDelete)
-                .when().delete("/marca/{id}")
+                .when().delete("/modelos/{id}")
                 .then()
-                .statusCode(200)
-                .body("id", is(idToDelete.intValue()));
+                .statusCode(200);
 
-         // Verifique
-         given()
+        given()
                 .pathParam("id", idToDelete)
-                .when().get("/marca/{id}")
+                .when().get("/modelos/{id}")
                 .then()
                 .statusCode(404);
     }
@@ -117,8 +115,8 @@ public class MarcaResourceTest {
      @Test
     public void testDeleteEndpointNotFound() {
         given()
-                .pathParam("id", NON_EXISTING_MARCA_ID)
-                .when().delete("/marca/{id}")
+                .pathParam("id", NON_EXISTING_MODELO_ID)
+                .when().delete("/modelos/{id}")
                 .then()
                 .statusCode(404);
     }

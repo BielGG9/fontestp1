@@ -2,7 +2,7 @@ package gabriel.fontes.br.quarkus.Resource;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test; // Removido @Disabled
+import org.junit.jupiter.api.Test; 
 
 import gabriel.fontes.br.quarkus.Dto.EnderecoRequest;
 
@@ -10,10 +10,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
 
-@QuarkusTest // Teste habilitado
+@QuarkusTest 
 public class EnderecoResourceTest {
 
-    // IDs baseados no import.sql para a tabela 'endereco'
+    
     private static final Long EXISTING_ENDERECO_ID = 1L;
     private static final Long NON_EXISTING_ENDERECO_ID = 999L;
 
@@ -23,7 +23,7 @@ public class EnderecoResourceTest {
                 .when().get("/enderecos")
                 .then()
                 .statusCode(200)
-                .body("size()", greaterThan(0)); // Agora esperamos que haja endereços
+                .body("size()", greaterThan(0)); 
     }
 
      @Test
@@ -34,7 +34,7 @@ public class EnderecoResourceTest {
                 .then()
                 .statusCode(200)
                 .body("id", is(EXISTING_ENDERECO_ID.intValue()))
-                .body("rua", is("Rua das Flores")); // Verifique o dado do import.sql
+                .body("rua", is("Rua das Flores")); 
     }
 
       @Test
@@ -60,7 +60,7 @@ public class EnderecoResourceTest {
                 .statusCode(201) // Created
                 .body("rua", is("Rua Nova Teste"))
                 .body("cep", is("99999-000"));
-                // O ServiceImpl de create pode precisar ser ajustado para setar todos os campos do DTO
+                
     }
 
     @Test
@@ -79,7 +79,7 @@ public class EnderecoResourceTest {
                 .body("id", is(EXISTING_ENDERECO_ID.intValue()))
                 .body("rua", is("Rua Atualizada Teste"))
                 .body("cep", is("54321-111"));
-                // O ServiceImpl de update pode precisar ser ajustado para setar todos os campos do DTO
+                
     }
 
       @Test
@@ -96,7 +96,6 @@ public class EnderecoResourceTest {
 
     @Test
     public void testDeleteEndpoint() {
-          // Crie um endereço para deletar
          EnderecoRequest createDto = new EnderecoRequest("Rua Del", "0", null, "Bairro Del", "Cidade Del", "DL", "00000-000");
          var response = given()
                             .contentType(ContentType.JSON)
@@ -105,18 +104,15 @@ public class EnderecoResourceTest {
                             .then()
                             .statusCode(201)
                             .extract().response();
-         // Use o ID retornado pelo POST, já que Endereco agora tem ID próprio
          Long idToDelete = response.jsonPath().getLong("id");
 
-        // Delete
         given()
                 .pathParam("id", idToDelete)
                 .when().delete("/enderecos/{id}")
                 .then()
-                .statusCode(200) // OK, pois retorna o objeto deletado
+                .statusCode(200) 
                 .body("id", is(idToDelete.intValue()));
 
-        // Verifique se foi realmente deletado
         given()
                 .pathParam("id", idToDelete)
                 .when().get("/enderecos/{id}")
@@ -130,6 +126,6 @@ public class EnderecoResourceTest {
                 .pathParam("id", NON_EXISTING_ENDERECO_ID)
                 .when().delete("/enderecos/{id}")
                 .then()
-                .statusCode(404); // O Service lança NotFoundException
+                .statusCode(404); 
     }
 }

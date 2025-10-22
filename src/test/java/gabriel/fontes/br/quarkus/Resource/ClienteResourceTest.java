@@ -1,8 +1,8 @@
-    package gabriel.fontes.br.quarkus.Resource; // Certifique-se que o pacote está correto
+    package gabriel.fontes.br.quarkus.Resource; 
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-// Removidos imports não utilizados
+
 import org.junit.jupiter.api.Test;
 
 import gabriel.fontes.br.quarkus.Dto.ClienteRequest;
@@ -16,11 +16,8 @@ import static org.hamcrest.Matchers.greaterThan;
 @QuarkusTest
 public class ClienteResourceTest {
 
-    // --- CORREÇÃO APLICADA AQUI ---
-    // IDs baseados no import.sql (clientes começam em 8)
     
-    
-    private static final Long EXISTING_CLIENTE_ID = 1L; // << Alterado para 8L
+    private static final Long EXISTING_CLIENTE_ID = 1L; 
     private static final Long NON_EXISTING_CLIENTE_ID = 999L;
 
     @Test
@@ -40,7 +37,7 @@ public class ClienteResourceTest {
                 .then()
                 .statusCode(200)
                 .body("id", is(EXISTING_CLIENTE_ID.intValue()))
-                .body("nome", is("João da Silva")); // Assumindo dados do import.sql
+                .body("nome", is("João da Silva")); 
     }
 
     @Test
@@ -57,8 +54,8 @@ public class ClienteResourceTest {
         ClienteRequest requestDto = new ClienteRequest(
                 "Novo Cliente Teste",
                 "teste.novo@email.com",
-                "111.222.333-44", // Incluído CPF
-                "1234567 SSP/SP",  // Incluído RG
+                "111.222.333-44", 
+                "1234567 SSP/SP", 
                 LocalDateTime.now()
         );
 
@@ -78,18 +75,18 @@ public class ClienteResourceTest {
         ClienteRequest requestDto = new ClienteRequest(
                 "Cliente Atualizado",
                 "atualizado@email.com",
-                "555.666.777-88", // Incluído CPF
-                "9876543 SSP/RJ",  // Incluído RG
+                "555.666.777-88", 
+                "9876543 SSP/RJ",  
                 LocalDateTime.now()
         );
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
-                .pathParam("id", EXISTING_CLIENTE_ID) // Usando o ID 8L corrigido
+                .pathParam("id", EXISTING_CLIENTE_ID) 
                 .when().put("/clientes/{id}")
                 .then()
-                .statusCode(200) // Deve retornar 200 OK agora
+                .statusCode(200) 
                 .body("id", is(EXISTING_CLIENTE_ID.intValue()))
                 .body("nome", is("Cliente Atualizado"))
                 .body("email", is("atualizado@email.com"))
@@ -106,12 +103,12 @@ public class ClienteResourceTest {
                 .pathParam("id", NON_EXISTING_CLIENTE_ID)
                 .when().put("/clientes/{id}")
                 .then()
-                .statusCode(404); // Espera 404 Not Found
+                .statusCode(404); 
     }
 
     @Test
     public void testDeleteEndpoint() {
-        // Primeiro, crie um cliente para deletar
+        
          ClienteRequest createDto = new ClienteRequest("Cliente Para Deletar", "delete@email.com", "000", "000", null);
          var response = given()
                             .contentType(ContentType.JSON)
@@ -122,15 +119,14 @@ public class ClienteResourceTest {
                             .extract().response();
          Long idToDelete = response.jsonPath().getLong("id");
 
-        // Agora, delete o cliente criado
+       
         given()
                 .pathParam("id", idToDelete)
                 .when().delete("/clientes/{id}")
                 .then()
-                .statusCode(200) // OK, pois retorna o objeto deletado
+                .statusCode(200) 
                 .body("id", is(idToDelete.intValue()));
 
-        // Verifique se foi deletado
         given()
                 .pathParam("id", idToDelete)
                 .when().get("/clientes/{id}")
@@ -144,6 +140,6 @@ public class ClienteResourceTest {
                 .pathParam("id", NON_EXISTING_CLIENTE_ID)
                 .when().delete("/clientes/{id}")
                 .then()
-                .statusCode(404); // Not Found, pois o Service lança exceção
+                .statusCode(404); 
     }
 }

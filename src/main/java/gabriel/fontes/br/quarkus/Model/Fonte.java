@@ -34,7 +34,7 @@ public class Fonte extends DefaultEntity {
 private List<Fornecedor> fornecedores;
 
     @ManyToOne(optional = false)
-    private Marca marca;
+    private Modelo modelo;
 
     @Enumerated(EnumType.STRING)
     private Certificacao certificacao;
@@ -75,12 +75,14 @@ private List<Fornecedor> fornecedores;
     public void setEstoque(Integer estoque) {
         this.estoque = estoque;
     }
-    public Marca getMarca() {
-        return marca;
+
+    public Modelo getModelo() {
+        return modelo;
     }
-    public void setMarca(Marca marca) {
-        this.marca = marca;
+    public void setModelo(Modelo modelo) {
+        this.modelo = modelo;
     }
+   
     public Certificacao getCertificacao() {
         return certificacao;
     }

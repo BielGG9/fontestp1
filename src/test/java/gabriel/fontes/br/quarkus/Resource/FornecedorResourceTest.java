@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.greaterThan;
 @QuarkusTest
 public class FornecedorResourceTest {
 
-    private static final Long EXISTING_FORNECEDOR_ID = 8L; // Componentes Express
+    private static final Long EXISTING_FORNECEDOR_ID = 8L;
     private static final Long NON_EXISTING_FORNECEDOR_ID = 999L;
 
     @Test
@@ -65,12 +65,10 @@ public class FornecedorResourceTest {
                 .body("email", is("contato@testecreate.com"))
                 .body("razaoSocial", is("Teste Create Ltda"))
                 .body("cnpj", is("12.345.678/0001-99"));
-                // O Service não estava populando o nome no create original, ajuste o service se necessário
     }
 
      @Test
     public void testUpdateEndpoint() {
-        // Criar um Fornecedor primeiro para ter um ID válido para atualizar
         FornecedorRequest createDto = new FornecedorRequest("Antes Update", "antes@upd.com", "Antes UPD Ltda", "001", "100");
         var postResponse = given()
                 .contentType(ContentType.JSON)
@@ -79,7 +77,6 @@ public class FornecedorResourceTest {
                 .then().statusCode(201).extract().response();
         Long idToUpdate = postResponse.jsonPath().getLong("id");
 
-        // Dados para atualização
         FornecedorRequest updateDto = new FornecedorRequest(
                 "Fornecedor Teste Update",
                 "contato@testeupdate.com",
@@ -96,9 +93,8 @@ public class FornecedorResourceTest {
                 .then()
                 .statusCode(200)
                 .body("id", is(idToUpdate.intValue()))
-                .body("nome", is("Fornecedor Teste Update")) // Service precisa ser ajustado para atualizar tudo
+                .body("nome", is("Fornecedor Teste Update")) 
                 .body("email", is("contato@testeupdate.com"));
-                // Adicione asserts para razaoSocial, cnpj, inscricaoEstadual se o service for corrigido
     }
 
     @Test
@@ -115,7 +111,6 @@ public class FornecedorResourceTest {
 
     @Test
     public void testDeleteEndpoint() {
-         // Crie um fornecedor para deletar
          FornecedorRequest createDto = new FornecedorRequest("Fornecedor Delete", "delete@f.com", "Delete Ltda", "002", "200");
          var response = given()
                             .contentType(ContentType.JSON)
@@ -126,7 +121,6 @@ public class FornecedorResourceTest {
                             .extract().response();
          Long idToDelete = response.jsonPath().getLong("id");
 
-        // Delete
         given()
                 .pathParam("id", idToDelete)
                 .when().delete("/fornecedores/{id}")
@@ -134,7 +128,6 @@ public class FornecedorResourceTest {
                 .statusCode(200)
                 .body("id", is(idToDelete.intValue()));
 
-        // Verifique
         given()
                 .pathParam("id", idToDelete)
                 .when().get("/fornecedores/{id}")

@@ -7,6 +7,13 @@ INSERT INTO departamento(sigla, descricao) VALUES ('FIN', 'Departamento Financei
 INSERT INTO departamento(sigla, descricao) VALUES ('TI', 'Departamento de Tecnologia da Informação');
 INSERT INTO departamento(sigla, descricao) VALUES ('RH', 'Departamento de Recursos Humanos');
 
+-- Modelos inseridos primeiro (dependem de Marca)
+INSERT INTO modelo(numeracao, marca_id) VALUES(750, 1); 
+INSERT INTO modelo(numeracao, marca_id) VALUES(600, 1); 
+INSERT INTO modelo(numeracao, marca_id) VALUES(1000, 2); 
+INSERT INTO modelo(numeracao, marca_id) VALUES(550, 3);
+INSERT INTO modelo(numeracao, marca_id) VALUES(850, 3);
+
 INSERT INTO Pessoa(nome, email) VALUES ('João da Silva', 'joao.silva@email.com');
 INSERT INTO Pessoa(nome, email) VALUES ('Maria Oliveira', 'maria.o@email.com');
 INSERT INTO Pessoa(nome, email) VALUES ('Ana Carolina', 'ana.carolina.to@email.com');
@@ -43,11 +50,11 @@ INSERT INTO Fornecedor(id, razaoSocial) VALUES (8, 'Componentes Express Ltda');
 INSERT INTO Fornecedor(id, razaoSocial) VALUES (9, 'InfoPeças Distribuidora S.A.');
 INSERT INTO Fornecedor(id, razaoSocial) VALUES (10, 'Bits & Bytes Comércio de Eletrônicos');
 
-INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, marca_id) VALUES('RM750x', 750, 799.90, 50, 'GOLD', 1);
-INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, marca_id) VALUES('SF600', 600, 650.00, 35, 'PLATINUM', 1);
-INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, marca_id) VALUES('PRIME TX-1000', 1000, 1890.50, 15, 'TITANIUM', 2);
-INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, marca_id) VALUES('MWE 550', 550, 399.00, 80, 'BRONZE', 3);
-INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, marca_id) VALUES('V850 SFX', 850, 950.00, 25, 'GOLD', 3);
+INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, modelo_id) VALUES('RM750x', 750, 799.90, 50, 'GOLD', 1);
+INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, modelo_id) VALUES('SF600', 600, 650.00, 35, 'PLATINUM', 2);
+INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, modelo_id) VALUES('PRIME TX-1000', 1000, 1890.50, 15, 'TITANIUM', 3);
+INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, modelo_id) VALUES('MWE 550', 550, 399.00, 80, 'BRONZE', 4);
+INSERT INTO fonte(nome, potencia, preco, estoque, certificacao, modelo_id) VALUES('V850 SFX', 850, 950.00, 25, 'GOLD', 5);
 
 INSERT INTO enderecos(rua, numero, complemento, bairro, cidade, estado, cep, pessoa_id) VALUES ('Rua das Flores', '123', 'Apto 101', 'Jardim Primavera', 'São Paulo', 'SP', '01000-001', 1);
 INSERT INTO enderecos(rua, numero, complemento, bairro, cidade, estado, cep, pessoa_id) VALUES ('Avenida Brasil', '1500', 'Sala 50', 'Centro', 'Rio de Janeiro', 'RJ', '20000-002', 2);

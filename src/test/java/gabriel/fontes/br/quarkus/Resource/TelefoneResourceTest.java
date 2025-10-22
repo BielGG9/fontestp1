@@ -2,7 +2,7 @@ package gabriel.fontes.br.quarkus.Resource;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test; // Removido @Disabled
+import org.junit.jupiter.api.Test; 
 
 import gabriel.fontes.br.quarkus.Dto.TelefoneRequest;
 
@@ -10,10 +10,9 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
 
-@QuarkusTest // Teste habilitado
+@QuarkusTest 
 public class TelefoneResourceTest {
 
-    // IDs baseados no import.sql para a tabela 'telefones'
     private static final Long EXISTING_TELEFONE_ID = 1L;
     private static final Long NON_EXISTING_TELEFONE_ID = 999L;
 
@@ -23,7 +22,7 @@ public class TelefoneResourceTest {
                 .when().get("/telefones")
                 .then()
                 .statusCode(200)
-                .body("size()", greaterThan(0)); // Agora esperamos que haja telefones
+                .body("size()", greaterThan(0)); 
     }
 
      @Test
@@ -34,8 +33,8 @@ public class TelefoneResourceTest {
                 .then()
                 .statusCode(200)
                 .body("id", is(EXISTING_TELEFONE_ID.intValue()))
-                .body("ddd", is("11")) // Verifique o dado do import.sql
-                .body("numero", is("98765-4321")); // Verifique o dado do import.sql
+                .body("ddd", is("11")) 
+                .body("numero", is("98765-4321")); 
     }
 
       @Test
@@ -56,7 +55,7 @@ public class TelefoneResourceTest {
                 .body(requestDto)
                 .when().post("/telefones")
                 .then()
-                .statusCode(201) // Created
+                .statusCode(201)
                 .body("ddd", is("71"))
                 .body("numero", is("98888-7777"));
     }
@@ -91,7 +90,6 @@ public class TelefoneResourceTest {
 
     @Test
     public void testDeleteEndpoint() {
-          // Crie um telefone para deletar
          TelefoneRequest createDto = new TelefoneRequest("99", "1234-5678");
          var response = given()
                             .contentType(ContentType.JSON)
@@ -100,18 +98,15 @@ public class TelefoneResourceTest {
                             .then()
                             .statusCode(201)
                             .extract().response();
-        // Use o ID retornado pelo POST
          Long idToDelete = response.jsonPath().getLong("id");
 
-        // Delete
         given()
                 .pathParam("id", idToDelete)
                 .when().delete("/telefones/{id}")
                 .then()
-                .statusCode(200) // OK, pois retorna o objeto deletado
+                .statusCode(200) 
                 .body("id", is(idToDelete.intValue()));
 
-        // Verifique se foi realmente deletado
         given()
                 .pathParam("id", idToDelete)
                 .when().get("/telefones/{id}")
@@ -125,6 +120,6 @@ public class TelefoneResourceTest {
                 .pathParam("id", NON_EXISTING_TELEFONE_ID)
                 .when().delete("/telefones/{id}")
                 .then()
-                .statusCode(404); // O Service lança NotFoundException
+                .statusCode(404); 
     }
 }

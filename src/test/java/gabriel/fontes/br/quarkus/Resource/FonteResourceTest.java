@@ -8,14 +8,14 @@ import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo; // Mudado para >= 0
+import static org.hamcrest.Matchers.greaterThanOrEqualTo; 
 
 @QuarkusTest
 public class FonteResourceTest {
 
-    private static final Long EXISTING_FONTE_ID = 1L; // Assumindo ID 1 após import.sql corrigido
+    private static final Long EXISTING_FONTE_ID = 1L; 
     private static final Long NON_EXISTING_FONTE_ID = 999L;
-    private static final Long EXISTING_MARCA_ID = 1L; // Assumindo ID 1 após import.sql corrigido
+    private static final Long EXISTING_MARCA_ID = 1L; 
 
     @Test
     public void testFindAllEndpoint() {
@@ -23,7 +23,7 @@ public class FonteResourceTest {
                 .when().get("/fontes")
                 .then()
                 .statusCode(200)
-                .body("size()", greaterThanOrEqualTo(0)); // Espera lista >= 0
+                .body("size()", greaterThanOrEqualTo(0)); 
     }
 
     @Test
@@ -32,9 +32,9 @@ public class FonteResourceTest {
                 .pathParam("id", EXISTING_FONTE_ID)
                 .when().get("/fontes/{id}")
                 .then()
-                .statusCode(200) // Pode falhar com 404 se import.sql falhar
+                .statusCode(200) 
                 .body("id", is(EXISTING_FONTE_ID.intValue()))
-                .body("nome", is("RM750x")); // Verifique nome no import.sql
+                .body("nome", is("RM750x")); 
     }
 
      @Test
@@ -48,12 +48,12 @@ public class FonteResourceTest {
 
     @Test
     public void testCreateEndpoint() {
-        // CORRIGIDO: Adicionado argumento 'estoque' (ex: 10)
+        
         FonteRequest requestDto = new FonteRequest(
                 "Fonte Teste Create",
-                550,          // potencia
-                350.00,       // preco
-                10,           // estoque
+                550,         
+                350.00,       
+                10,           
                 EXISTING_MARCA_ID,
                 "BRONZE"
         );
@@ -66,19 +66,18 @@ public class FonteResourceTest {
                 .statusCode(201)
                 .body("nome", is("Fonte Teste Create"))
                 .body("potencia", is(550))
-                .body("estoque", is(10)) // Verifica estoque na resposta
+                .body("estoque", is(10)) 
                 .body("certificacao.id", is(Certificacao.BRONZE.getId()))
                 .body("certificacao.fontcert", is(Certificacao.BRONZE.getFontcert()));
     }
 
     @Test
     public void testUpdateEndpoint() {
-         // CORRIGIDO: Adicionado argumento 'estoque' (ex: 20)
         FonteRequest requestDto = new FonteRequest(
                 "Fonte Teste Update",
-                850,          // potencia
-                900.50,       // preco
-                20,           // estoque
+                850,          
+                900.50,       
+                20,           
                 EXISTING_MARCA_ID,
                 "GOLD"
         );
@@ -89,18 +88,17 @@ public class FonteResourceTest {
                 .pathParam("id", EXISTING_FONTE_ID)
                 .when().put("/fontes/{id}")
                 .then()
-                .statusCode(200) // Pode falhar com 404 se import.sql falhar
+                .statusCode(200) 
                 .body("id", is(EXISTING_FONTE_ID.intValue()))
                 .body("nome", is("Fonte Teste Update"))
                 .body("potencia", is(850))
-                .body("estoque", is(20)) // Verifica estoque na resposta
+                .body("estoque", is(20)) 
                 .body("certificacao.id", is(Certificacao.GOLD.getId()))
                 .body("certificacao.fontcert", is(Certificacao.GOLD.getFontcert()));
     }
 
      @Test
     public void testUpdateEndpointNotFound() {
-         // CORRIGIDO: Adicionado argumento 'estoque' (ex: 0)
         FonteRequest requestDto = new FonteRequest("Nome", 500, 100.0, 0, 1L, "BRONZE");
         given()
                 .contentType(ContentType.JSON)
@@ -113,7 +111,6 @@ public class FonteResourceTest {
 
     @Test
     public void testDeleteEndpoint() {
-         // CORRIGIDO: Adicionado argumento 'estoque' (ex: 5)
          FonteRequest createDto = new FonteRequest("Fonte Delete", 450, 200.0, 5, EXISTING_MARCA_ID, "SILVER");
          var response = given()
                             .contentType(ContentType.JSON)

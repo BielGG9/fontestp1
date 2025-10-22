@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.greaterThan;
 @QuarkusTest
 public class DepartamentoResourceTest {
 
-    private static final Long EXISTING_DEPARTAMENTO_ID = 1L; // Vendas
+    private static final Long EXISTING_DEPARTAMENTO_ID = 1L; 
     private static final Long NON_EXISTING_DEPARTAMENTO_ID = 999L;
 
     @Test
@@ -50,7 +50,7 @@ public class DepartamentoResourceTest {
         DepartamentoRequest requestDto = new DepartamentoRequest(
                 "MKT",
                 "Departamento de Marketing",
-                "ATIVO" // Ajuste se o service espera o nome do Enum ou ID
+                "ATIVO" 
         );
 
         given()
@@ -61,7 +61,7 @@ public class DepartamentoResourceTest {
                 .statusCode(201)
                 .body("sigla", is("MKT"))
                 .body("descricao", is("Departamento de Marketing"));
-                // O service original não setava o status no create, ajuste se necessário
+               
     }
 
     @Test
@@ -69,7 +69,7 @@ public class DepartamentoResourceTest {
         DepartamentoRequest requestDto = new DepartamentoRequest(
                 "VND-UPD",
                 "Departamento de Vendas Atualizado",
-                "INATIVO" // Ajuste se o service espera o nome do Enum ou ID
+                "INATIVO" 
         );
 
         given()
@@ -82,7 +82,7 @@ public class DepartamentoResourceTest {
                 .body("id", is(EXISTING_DEPARTAMENTO_ID.intValue()))
                 .body("sigla", is("VND-UPD"))
                 .body("descricao", is("Departamento de Vendas Atualizado"));
-                // O service original não atualizava o status no update, ajuste se necessário
+                
     }
 
      @Test
@@ -99,7 +99,7 @@ public class DepartamentoResourceTest {
 
     @Test
     public void testDeleteEndpoint() {
-         // Crie um departamento para deletar
+        
          DepartamentoRequest createDto = new DepartamentoRequest("DEL", "Deletar", "ATIVO");
          var response = given()
                             .contentType(ContentType.JSON)
@@ -110,7 +110,7 @@ public class DepartamentoResourceTest {
                             .extract().response();
          Long idToDelete = response.jsonPath().getLong("id");
 
-        // Delete
+        
         given()
                 .pathParam("id", idToDelete)
                 .when().delete("/departamentos/{id}")
@@ -118,7 +118,7 @@ public class DepartamentoResourceTest {
                 .statusCode(200)
                 .body("id", is(idToDelete.intValue()));
 
-        // Verifique
+        
         given()
                 .pathParam("id", idToDelete)
                 .when().get("/departamentos/{id}")
