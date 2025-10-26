@@ -4,7 +4,7 @@ import gabriel.fontes.br.quarkus.Model.Modelo;
 
 public record ModeloResponse(
     Long id,
-    String Marca,
+    String marca,
     int numeracao
 ) {
 

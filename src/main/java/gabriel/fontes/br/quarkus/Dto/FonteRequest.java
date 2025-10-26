@@ -19,9 +19,9 @@ public record FonteRequest(
     @Positive(message = "O estoque deve ser um número positivo")
     Integer estoque,
 
-    @NotNull(message = "O id da marca não pode ser nulo")
-    @Positive(message = "O id da marca deve ser um número positivo")
-    Long idMarca,
+    @NotNull(message = "O id do modelo não pode ser nulo")
+    @Positive(message = "O id do modelo deve ser um número positivo")
+    Long idModelo,
 
     @NotBlank(message = "A certificação deve conter ao menos 1 caractere")
     String certificacao

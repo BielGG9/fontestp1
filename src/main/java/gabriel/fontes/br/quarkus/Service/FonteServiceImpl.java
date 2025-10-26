@@ -3,10 +3,10 @@ package gabriel.fontes.br.quarkus.Service;
 import gabriel.fontes.br.quarkus.Dto.FonteRequest;
 import gabriel.fontes.br.quarkus.Dto.FonteResponse;
 import gabriel.fontes.br.quarkus.Model.Fonte;
-import gabriel.fontes.br.quarkus.Model.Marca;
+import gabriel.fontes.br.quarkus.Model.Modelo;
 import gabriel.fontes.br.quarkus.Model.Enums.Certificacao;
 import gabriel.fontes.br.quarkus.Repository.FonteRepository;
-import gabriel.fontes.br.quarkus.Repository.MarcaRepository;
+import gabriel.fontes.br.quarkus.Repository.ModeloRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -22,7 +22,7 @@ public class FonteServiceImpl implements FonteService {
     FonteRepository repository;
 
     @Inject 
-    MarcaRepository marcaRepository;
+    ModeloRepository modeloRepository;
 
     @Override
     @Transactional 
@@ -34,8 +34,11 @@ public class FonteServiceImpl implements FonteService {
         novaFonte.setPotencia(dto.potencia());
         novaFonte.setPreco(dto.preco());
         novaFonte.setEstoque(dto.estoque());
-        Marca marca = marcaRepository.findById(dto.idMarca());
-        novaFonte.setMarca(marca);
+        
+        Modelo modelo = modeloRepository.findByIdOptional(dto.idModelo())
+                .orElseThrow(() -> new NotFoundException("Modelo com id " + dto.idModelo() + " não encontrado."));
+        novaFonte.setModelo(modelo);
+        
         novaFonte.setCertificacao(Certificacao.valueOf(dto.certificacao().toUpperCase()));
 
         repository.persist(novaFonte);
@@ -75,8 +78,11 @@ public class FonteServiceImpl implements FonteService {
         fonteExistente.setPotencia(dto.potencia());
         fonteExistente.setPreco(dto.preco());
         fonteExistente.setEstoque(dto.estoque());
-        Marca marca = marcaRepository.findById(dto.idMarca());
-        fonteExistente.setMarca(marca);
+
+        Modelo modelo = modeloRepository.findByIdOptional(dto.idModelo())
+                .orElseThrow(() -> new NotFoundException("Modelo com id " + dto.idModelo() + " não encontrado."));
+        fonteExistente.setModelo(modelo);
+
         fonteExistente.setCertificacao(Certificacao.valueOf(dto.certificacao().toUpperCase()));
 
 

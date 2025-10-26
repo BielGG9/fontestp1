@@ -103,7 +103,7 @@ public class ModeloResourceTest {
                 .pathParam("id", idToDelete)
                 .when().delete("/modelos/{id}")
                 .then()
-                .statusCode(200);
+                        .statusCode(200);
 
         given()
                 .pathParam("id", idToDelete)

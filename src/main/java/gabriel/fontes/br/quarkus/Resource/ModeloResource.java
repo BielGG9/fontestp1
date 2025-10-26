@@ -49,7 +49,7 @@ public class ModeloResource {
     @Path("/{id}")
     @Transactional
     public Response delete(@PathParam("id") Long id) {
-        ModeloResponse marcaDeletada = service.delete(id);
-        return Response.ok(marcaDeletada).build();
+        ModeloResponse modeloDeletado = service.delete(id);
+        return Response.ok(modeloDeletado).build();
     }
 }

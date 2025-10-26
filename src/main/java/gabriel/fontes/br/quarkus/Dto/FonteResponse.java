@@ -9,7 +9,7 @@ public record FonteResponse(
     Integer potencia,
     double preco,
     Integer estoque,
-    String Modelo,
+    String marca,
     Certificacao certificacao
 ) {
     public static FonteResponse fromEntity(Fonte fonte) {
