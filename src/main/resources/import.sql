@@ -2,17 +2,17 @@ INSERT INTO marca(nome) VALUES('Corsair');
 INSERT INTO marca(nome) VALUES('Seasonic');
 INSERT INTO marca(nome) VALUES('Cooler Master');
 
-INSERT INTO departamento(sigla, descricao) VALUES ('VND', 'Departamento de Vendas');
-INSERT INTO departamento(sigla, descricao) VALUES ('FIN', 'Departamento Financeiro');
-INSERT INTO departamento(sigla, descricao) VALUES ('TI', 'Departamento de Tecnologia da Informação');
-INSERT INTO departamento(sigla, descricao) VALUES ('RH', 'Departamento de Recursos Humanos');
-
--- Modelos inseridos primeiro (dependem de Marca)
+-- IDs dos Modelos gerados: 1, 2, 3
 INSERT INTO modelo(numeracao, marca_id) VALUES(750, 1); 
 INSERT INTO modelo(numeracao, marca_id) VALUES(600, 1); 
 INSERT INTO modelo(numeracao, marca_id) VALUES(1000, 2); 
 INSERT INTO modelo(numeracao, marca_id) VALUES(550, 3);
 INSERT INTO modelo(numeracao, marca_id) VALUES(850, 3);
+
+INSERT INTO departamento(sigla, descricao) VALUES ('VND', 'Departamento de Vendas');
+INSERT INTO departamento(sigla, descricao) VALUES ('FIN', 'Departamento Financeiro');
+INSERT INTO departamento(sigla, descricao) VALUES ('TI', 'Departamento de Tecnologia da Informação');
+INSERT INTO departamento(sigla, descricao) VALUES ('RH', 'Departamento de Recursos Humanos');
 
 INSERT INTO Pessoa(nome, email) VALUES ('João da Silva', 'joao.silva@email.com');
 INSERT INTO Pessoa(nome, email) VALUES ('Maria Oliveira', 'maria.o@email.com');
