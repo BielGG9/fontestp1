@@ -2,6 +2,7 @@ package gabriel.fontes.br.quarkus.Resource;
 
 
 import gabriel.fontes.br.quarkus.Service.FornecedorService;
+import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.FornecedorRequest;
 import gabriel.fontes.br.quarkus.Dto.FornecedorResponse;
 import jakarta.inject.Inject;
@@ -14,6 +15,7 @@ import java.util.List;
 @Path("/fornecedores")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class FornecedorResource {
 
     @Inject

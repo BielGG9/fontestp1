@@ -15,6 +15,8 @@ public class Funcionario extends PessoaFisica {
 
     private String cargo;
 
+    private String password;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "departamento_id")
     private Departamento departamento;
@@ -34,4 +36,12 @@ public class Funcionario extends PessoaFisica {
     public void setCargo(String cargo) {
         this.cargo = cargo;
     }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+
 }

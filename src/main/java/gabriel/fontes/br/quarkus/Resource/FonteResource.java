@@ -1,6 +1,7 @@
 package gabriel.fontes.br.quarkus.Resource;
 
-import gabriel.fontes.br.quarkus.Service.FonteService; 
+import gabriel.fontes.br.quarkus.Service.FonteService;
+import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.FonteRequest;
 import gabriel.fontes.br.quarkus.Dto.FonteResponse;
 import jakarta.inject.Inject;
@@ -13,6 +14,7 @@ import java.util.List;
 @Path("/fontes")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class FonteResource {
 
     @Inject

@@ -3,6 +3,7 @@ package gabriel.fontes.br.quarkus.Resource;
 import gabriel.fontes.br.quarkus.Dto.ModeloRequest;
 import gabriel.fontes.br.quarkus.Dto.ModeloResponse;
 import gabriel.fontes.br.quarkus.Service.ModeloService;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -15,6 +16,7 @@ import java.util.List;
 @Path("/modelos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class ModeloResource {
 
     @Inject

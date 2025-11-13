@@ -15,10 +15,13 @@ import java.util.List;
 import gabriel.fontes.br.quarkus.Dto.ClienteRequest;
 import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
 import gabriel.fontes.br.quarkus.Service.ClienteService;
+import io.quarkus.security.Authenticated;
+
 
 @Path("/clientes")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class ClienteResource {
 
     @Inject

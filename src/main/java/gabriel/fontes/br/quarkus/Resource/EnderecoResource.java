@@ -2,6 +2,7 @@ package gabriel.fontes.br.quarkus.Resource;
 
 
 import gabriel.fontes.br.quarkus.Service.EnderecoService;
+import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.EnderecoRequest;
 import gabriel.fontes.br.quarkus.Dto.EnderecoResponse;
 import jakarta.inject.Inject;
@@ -14,6 +15,7 @@ import java.util.List;
 @Path("/enderecos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class EnderecoResource {
 
     @Inject

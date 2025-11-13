@@ -2,7 +2,6 @@ INSERT INTO marca(nome) VALUES('Corsair');
 INSERT INTO marca(nome) VALUES('Seasonic');
 INSERT INTO marca(nome) VALUES('Cooler Master');
 
--- IDs dos Modelos gerados: 1, 2, 3
 INSERT INTO modelo(numeracao, marca_id) VALUES(750, 1); 
 INSERT INTO modelo(numeracao, marca_id) VALUES(600, 1); 
 INSERT INTO modelo(numeracao, marca_id) VALUES(1000, 2); 
@@ -41,10 +40,10 @@ INSERT INTO Cliente(id, dataCadastro) VALUES (1, '2024-03-10T10:00:00');
 INSERT INTO Cliente(id, dataCadastro) VALUES (2, '2024-05-15T15:30:00');
 INSERT INTO Cliente(id, dataCadastro) VALUES (3, '2024-07-20T11:00:00');
 
-INSERT INTO Funcionario(id, cargo, departamento_id) VALUES (4, 'Gerente de Vendas', 1);
-INSERT INTO Funcionario(id, cargo, departamento_id) VALUES (5, 'Analista Financeiro', 2);
-INSERT INTO Funcionario(id, cargo, departamento_id) VALUES (6, 'Desenvolvedor Pleno', 3);
-INSERT INTO Funcionario(id, cargo, departamento_id) VALUES (7, 'Desenvolvedora Sênior', 3);
+INSERT INTO Funcionario(id, cargo, departamento_id, password) VALUES (4, 'Gerente de Vendas', 1, '$2a$10$bvqTvjKfuuZXCo/JsBYX4ewgtyS7KttljBxr9WwA..ECXUkPE9Wda');
+INSERT INTO Funcionario(id, cargo, departamento_id, password) VALUES (5, 'Analista Financeiro', 2, '$2a$10$bvqTvjKfuuZXCo/JsBYX4ewgtyS7KttljBxr9WwA..ECXUkPE9Wda');
+INSERT INTO Funcionario(id, cargo, departamento_id, password) VALUES (6, 'Desenvolvedor Pleno', 3, '$2a$10$bvqTvjKfuuZXCo/JsBYX4ewgtyS7KttljBxr9WwA..ECXUkPE9Wda');
+INSERT INTO Funcionario(id, cargo, departamento_id, password) VALUES (7, 'Desenvolvedora Sênior', 3, '$2a$10$bvqTvjKfuuZXCo/JsBYX4ewgtyS7KttljBxr9WwA..ECXUkPE9Wda');
 
 INSERT INTO Fornecedor(id, razaoSocial) VALUES (8, 'Componentes Express Ltda');
 INSERT INTO Fornecedor(id, razaoSocial) VALUES (9, 'InfoPeças Distribuidora S.A.');
