@@ -1,10 +1,6 @@
 package gabriel.fontes.br.quarkus.Model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
 import jakarta.persistence.Entity;
 
 

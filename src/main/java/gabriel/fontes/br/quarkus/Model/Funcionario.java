@@ -1,12 +1,9 @@
 package gabriel.fontes.br.quarkus.Model;
 
-import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
-import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
