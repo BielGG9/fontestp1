@@ -16,7 +16,7 @@ import java.util.List;
 @Path("/modelos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Authenticated
+
 public class ModeloResource {
 
     @Inject

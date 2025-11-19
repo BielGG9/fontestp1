@@ -16,7 +16,6 @@ import java.util.List;
 @Path("/marca")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Authenticated
 public class MarcaResource {
 
     @Inject

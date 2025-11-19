@@ -29,6 +29,6 @@ public enum Perfil {
     
         }      
     }
-        throw new NotAuthorizedException("Erro no Perfil! ");
+        throw new NotAuthorizedException("Id invalido! " + id);
 }  
 }

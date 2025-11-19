@@ -15,7 +15,6 @@ import java.util.List;
 @Path("/fornecedores")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Authenticated
 public class FornecedorResource {
 
     @Inject

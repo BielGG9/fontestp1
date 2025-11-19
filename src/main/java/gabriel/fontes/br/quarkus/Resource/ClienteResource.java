@@ -21,7 +21,6 @@ import io.quarkus.security.Authenticated;
 @Path("/clientes")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Authenticated
 public class ClienteResource {
 
     @Inject

@@ -14,7 +14,6 @@ import java.util.List;
 @Path("/departamentos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Authenticated
 public class DepartamentoResource {
 
     @Inject

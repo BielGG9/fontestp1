@@ -4,9 +4,16 @@ import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
+import gabriel.fontes.br.quarkus.Dto.AuthRequest;
+import gabriel.fontes.br.quarkus.Dto.AuthResponse;
 import gabriel.fontes.br.quarkus.Model.Funcionario;
+import gabriel.fontes.br.quarkus.Model.Usuario;
 import gabriel.fontes.br.quarkus.Repository.FuncionarioRepository;
+import gabriel.fontes.br.quarkus.Repository.UsuarioRepository;
+import gabriel.fontes.br.quarkus.Service.HashService;
+import gabriel.fontes.br.quarkus.Service.TokenService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -15,7 +22,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.ws.rs.NotAuthorizedException;
-import io.quarkus.elytron.security.common.BcryptUtil;
+
 
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -23,59 +30,31 @@ import io.quarkus.elytron.security.common.BcryptUtil;
 public class AuthResource {
 
     @Inject
-    FuncionarioRepository funcionarioRepository;
+    UsuarioRepository usuarioRepository;
 
-    public static class LoginRequest {
-        public String email;
-        public String password; 
-    }
+    @Inject
+    HashService hashService;
+
+    @Inject
+    TokenService tokenService;
 
    @POST
     @Path("/login")
-    public Response login(LoginRequest loginRequest) {
-        
-        System.out.println("\n\n--- [DEBUG] TENTATIVA DE LOGIN ---");
-        System.out.println("Email recebido: " + loginRequest.email);
-        
+    public Response Login(@Valid AuthRequest authRequest) {
 
-        String senhaRecebida = loginRequest.password.trim(); 
+        Usuario usuario = usuarioRepository.findBylogin(authRequest.login())
+                .orElseThrow(() -> new NotAuthorizedException("Login Invalido! "));
 
-        System.out.println("Senha recebida (raw): '" + loginRequest.password + "' (Comprimento: " + loginRequest.password.length() + ")");
-        System.out.println("Senha recebida (limpa): '" + senhaRecebida + "' (Comprimento: " + senhaRecebida.length() + ")");
-        
-
-
-        Funcionario func = funcionarioRepository.find("email", loginRequest.email).firstResult();
-
-        if (func == null) {
-            System.out.println("RESULTADO: ERRO. Funcionário com email '" + loginRequest.email + "' NÃO encontrado no banco.");
-            throw new NotAuthorizedException("Usuário ou senha inválidos (Funcionario nao encontrado)");
+        if (hashService.verificarSenha(authRequest.senha(), usuario.getSenha())) {
+            
+            String token = tokenService.gerarToken(usuario);
+            
+            AuthResponse response = AuthResponse.fromEntity(token, usuario);
+            
+            return Response.ok(response).build();
         }
 
-        System.out.println("Funcionário encontrado: " + func.getNome());
-        System.out.println("Hash no banco de dados: " + func.getPassword());
+        throw new NotAuthorizedException("Usuario ou senha Invalidos! ");
         
-        if (func.getPassword() == null || func.getPassword().isEmpty()) {
-            System.out.println("RESULTADO: ERRO. O funcionário foi encontrado, mas a senha no banco está VAZIA.");
-            throw new NotAuthorizedException("Usuário ou senha inválidos (Senha no DB esta nula)");
-        }
-        
-        boolean passwordsBatem = BcryptUtil.matches(senhaRecebida, func.getPassword());
-        System.out.println("Passwords batem (Bcrypt): " + passwordsBatem);
-
-        if (passwordsBatem) {
-            Set<String> roles = new HashSet<>();
-            roles.add(func.getCargo()); 
-            String token = Jwt.issuer("https://fontes.br/api") 
-                                .subject(func.getEmail()) 
-                                .groups(roles) 
-                                .expiresIn(Duration.ofHours(8)) 
-                                .sign(); 
-            System.out.println("RESULTADO: SUCESSO. Token gerado.");
-            return Response.ok(token).build();
-        }
-
-        System.out.println("RESULTADO: ERRO. A senha recebida não bate com o hash do banco.");
-        throw new NotAuthorizedException("Usuário ou senha inválidos (Senha incorreta)");
     }
 }

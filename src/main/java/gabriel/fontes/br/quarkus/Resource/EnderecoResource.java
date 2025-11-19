@@ -15,7 +15,6 @@ import java.util.List;
 @Path("/enderecos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Authenticated
 public class EnderecoResource {
 
     @Inject

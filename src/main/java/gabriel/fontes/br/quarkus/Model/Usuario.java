@@ -4,10 +4,12 @@ import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
 import gabriel.fontes.br.quarkus.Model.Enums.Perfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "/usuarios")
+@Table(name = "usuarios")
 public class Usuario extends DefaultEntity{
 
     @Column(unique = false)
@@ -19,6 +21,9 @@ public class Usuario extends DefaultEntity{
     @Column(unique = false)
     private String senha;
 
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Perfil perfil;
 
     public String getNome() {

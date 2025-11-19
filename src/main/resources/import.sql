@@ -75,3 +75,9 @@ INSERT INTO fonte_fornecedor(fonte_id, fornecedor_id) VALUES (2, 8);
 INSERT INTO fonte_fornecedor(fonte_id, fornecedor_id) VALUES (3, 9);
 INSERT INTO fonte_fornecedor(fonte_id, fornecedor_id) VALUES (4, 10);
 INSERT INTO fonte_fornecedor(fonte_id, fornecedor_id) VALUES (5, 10);
+
+INSERT INTO usuarios(nome, login, senha, perfil) VALUES
+('Administrador', 'admin', '$2a$10$SPx2Nbfh7aGUgjlbcU/j5e7puMh0ot/SlmYvstsLYQdHRiu1Cr0oO', 'ADM');
+
+INSERT INTO usuarios(nome, login, senha, perfil) VALUES
+('Usuário Padrão', 'user', '$2a$10$SPx2Nbfh7aGUgjlbcU/j5e7puMh0ot/SlmYvstsLYQdHRiu1Cr0oO', 'USER');
