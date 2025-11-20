@@ -4,6 +4,8 @@ import gabriel.fontes.br.quarkus.Service.FonteService;
 import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.FonteRequest;
 import gabriel.fontes.br.quarkus.Dto.FonteResponse;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -21,6 +23,7 @@ public class FonteResource {
 
     @POST
     @Transactional
+    @RolesAllowed("ADM")
     public Response cadastrarFonte(FonteRequest fonteRequest) {
        
         FonteResponse fonteCriada = service.create(fonteRequest);
@@ -28,6 +31,7 @@ public class FonteResource {
     }
 
     @GET
+    @PermitAll
     public Response listarFontes() {
 
         List<FonteResponse> lista = service.findAll();
@@ -36,6 +40,7 @@ public class FonteResource {
     
     @GET
     @Path("/{id}")
+    @PermitAll
     public Response buscarPorId(@PathParam("id") Long id) {
 
         FonteResponse fonte = service.findById(id);
@@ -45,6 +50,7 @@ public class FonteResource {
     @DELETE
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADM")
     public Response deletarFonte(@PathParam("id") Long id) {
 
         FonteResponse fonteDeletada = service.delete(id);
@@ -54,6 +60,7 @@ public class FonteResource {
     @PUT
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADM")
     public Response atualizarFonte(@PathParam("id") Long id, FonteRequest fonteRequest) {
 
         FonteResponse fonteAtualizada = service.update(id, fonteRequest);
