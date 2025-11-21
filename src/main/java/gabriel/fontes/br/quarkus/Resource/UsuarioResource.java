@@ -24,6 +24,7 @@ public class UsuarioResource {
     UsuarioService service;
 
     @POST
+    @RolesAllowed("ADM")
     public Response create(UsuarioRequest request) {
         UsuarioResponse response = service.create(request);
         return Response.status(Response.Status.CREATED).entity(response).build();

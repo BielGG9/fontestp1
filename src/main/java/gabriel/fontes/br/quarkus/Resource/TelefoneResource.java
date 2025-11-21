@@ -5,6 +5,8 @@ import gabriel.fontes.br.quarkus.Service.TelefoneService;
 import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.TelefoneRequest;
 import gabriel.fontes.br.quarkus.Dto.TelefoneResponse;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -22,14 +24,16 @@ public class TelefoneResource {
 
     @POST
     @Transactional
-    public Response cadastrarTelefone(TelefoneRequest telefoneRequest) {
+    @RolesAllowed("ADM")
+    public Response create(TelefoneRequest telefoneRequest) {
 
         TelefoneResponse telefoneCriado = service.create(telefoneRequest);
         return Response.status(Response.Status.CREATED).entity(telefoneCriado).build();
     }
 
     @GET
-    public Response listarTelefones() {
+    @PermitAll
+    public Response findAll() {
 
         List<TelefoneResponse> lista = service.findAll();
         return Response.ok(lista).build();
@@ -37,7 +41,8 @@ public class TelefoneResource {
     
     @GET
     @Path("/{id}")
-    public Response buscarPorId(@PathParam("id") Long id) {
+    @PermitAll
+    public Response findById(@PathParam("id") Long id) {
 
         TelefoneResponse telefone = service.findById(id);
         return Response.ok(telefone).build();
@@ -46,7 +51,8 @@ public class TelefoneResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deletarTelefone(@PathParam("id") Long id) {
+    @RolesAllowed("ADM")
+    public Response delete(@PathParam("id") Long id) {
 
         TelefoneResponse telefoneDeletado = service.delete(id);
         return Response.ok(telefoneDeletado).build();
@@ -55,7 +61,8 @@ public class TelefoneResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Response atualizarTelefone(@PathParam("id") Long id, TelefoneRequest telefoneRequest) {
+    @RolesAllowed("ADM")
+    public Response update(@PathParam("id") Long id, TelefoneRequest telefoneRequest) {
 
         TelefoneResponse telefoneAtualizado = service.update(id, telefoneRequest);
         return Response.ok(telefoneAtualizado).build();

@@ -4,6 +4,8 @@ import gabriel.fontes.br.quarkus.Service.DepartamentoService;
 import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoRequest;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoResponse;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -21,14 +23,16 @@ public class DepartamentoResource {
 
     @POST
     @Transactional
-    public Response cadastrarDepartamento(DepartamentoRequest departamentoRequest) {
+    @RolesAllowed("ADM")
+    public Response create(DepartamentoRequest departamentoRequest) {
 
         DepartamentoResponse departamentoCriado = service.create(departamentoRequest);
         return Response.status(Response.Status.CREATED).entity(departamentoCriado).build();
     }
 
     @GET
-    public Response listarDepartamentos() {
+    @PermitAll
+    public Response findAll() {
 
         List<DepartamentoResponse> lista = service.findAll();
         return Response.ok(lista).build();
@@ -36,7 +40,8 @@ public class DepartamentoResource {
     
     @GET
     @Path("/{id}")
-    public Response buscarPorId(@PathParam("id") Long id) {
+    @PermitAll
+    public Response finById(@PathParam("id") Long id) {
 
         DepartamentoResponse departamento = service.findById(id);
         return Response.ok(departamento).build();
@@ -45,7 +50,8 @@ public class DepartamentoResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deletarDepartamento(@PathParam("id") Long id) {
+    @RolesAllowed("ADM")
+    public Response delete(@PathParam("id") Long id) {
 
         DepartamentoResponse departamentoDeletado = service.delete(id);
         return Response.ok(departamentoDeletado).build();
@@ -54,7 +60,8 @@ public class DepartamentoResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Response atualizarDepartamento(@PathParam("id") Long id, DepartamentoRequest departamentoRequest) {
+    @RolesAllowed("ADM")
+    public Response update(@PathParam("id") Long id, DepartamentoRequest departamentoRequest) {
 
         DepartamentoResponse departamentoAtualizado = service.update(id, departamentoRequest);
         return Response.ok(departamentoAtualizado).build();

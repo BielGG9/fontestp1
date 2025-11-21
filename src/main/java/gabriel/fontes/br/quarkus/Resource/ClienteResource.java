@@ -3,6 +3,8 @@ package gabriel.fontes.br.quarkus.Resource;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -26,6 +28,7 @@ public class ClienteResource {
     ClienteService service;
 
     @GET
+    @PermitAll
     public List<ClienteResponse> findAll() {
         return service.findAll();
 
@@ -33,6 +36,7 @@ public class ClienteResource {
 
     @GET
     @Path("/{id}")
+    @PermitAll
     public ClienteResponse findById(@PathParam("id") Long id) {
         return service.findById(id);
 
@@ -40,6 +44,7 @@ public class ClienteResource {
 
     @POST
     @Transactional
+    @RolesAllowed("ADM")
     public Response create(ClienteRequest request) {
         ClienteResponse response = service.create(request);
         return Response.created(URI.create("/clientes/" + response.id())).entity(response).build();
@@ -49,6 +54,7 @@ public class ClienteResource {
     @PUT
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADM")
     public ClienteResponse update(@PathParam("id")Long id, ClienteRequest request) {
         return service.update(id, request);
 
@@ -57,6 +63,7 @@ public class ClienteResource {
     @DELETE
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADM")
     public Response delete(@PathParam("id") Long id) {
         ClienteResponse clienteDeletada = service.delete(id);
         return Response.ok(clienteDeletada).build();

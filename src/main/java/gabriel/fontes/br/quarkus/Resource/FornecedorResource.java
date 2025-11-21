@@ -2,9 +2,10 @@ package gabriel.fontes.br.quarkus.Resource;
 
 
 import gabriel.fontes.br.quarkus.Service.FornecedorService;
-import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.FornecedorRequest;
 import gabriel.fontes.br.quarkus.Dto.FornecedorResponse;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -22,14 +23,16 @@ public class FornecedorResource {
 
     @POST
     @Transactional
-    public Response cadastrarFornecedor(FornecedorRequest fornecedorRequest) {
+    @RolesAllowed("ADM")
+    public Response create(FornecedorRequest fornecedorRequest) {
 
         FornecedorResponse fornecedorCriado = service.create(fornecedorRequest);
         return Response.status(Response.Status.CREATED).entity(fornecedorCriado).build();
     }
 
     @GET
-    public Response listarFornecedores() {
+    @PermitAll
+    public Response findAll() {
 
         List<FornecedorResponse> lista = service.findAll();
         return Response.ok(lista).build();
@@ -37,7 +40,8 @@ public class FornecedorResource {
     
     @GET
     @Path("/{id}")
-    public Response buscarPorId(@PathParam("id") Long id) {
+    @PermitAll
+    public Response findById(@PathParam("id") Long id) {
 
         FornecedorResponse fornecedor = service.findById(id);
         return Response.ok(fornecedor).build();
@@ -46,7 +50,8 @@ public class FornecedorResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deletarFornecedor(@PathParam("id") Long id) {
+    @RolesAllowed("ADM")
+    public Response delete(@PathParam("id") Long id) {
 
         FornecedorResponse fornecedorDeletado = service.delete(id);
         return Response.ok(fornecedorDeletado).build();
@@ -55,7 +60,8 @@ public class FornecedorResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Response atualizarFornecedor(@PathParam("id") Long id, FornecedorRequest fornecedorRequest) {
+    @RolesAllowed("ADM")
+    public Response update(@PathParam("id") Long id, FornecedorRequest fornecedorRequest) {
 
         FornecedorResponse fornecedorAtualizado = service.update(id, fornecedorRequest);
         return Response.ok(fornecedorAtualizado).build();

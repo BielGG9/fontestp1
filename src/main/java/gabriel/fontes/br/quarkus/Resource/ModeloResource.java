@@ -4,6 +4,8 @@ import gabriel.fontes.br.quarkus.Dto.ModeloRequest;
 import gabriel.fontes.br.quarkus.Dto.ModeloResponse;
 import gabriel.fontes.br.quarkus.Service.ModeloService;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -23,18 +25,21 @@ public class ModeloResource {
     ModeloService service;
 
     @GET
+    @PermitAll
     public List<ModeloResponse> findAll() {
         return service.findAll();
     }
 
     @GET
     @Path("/{id}")
+    @PermitAll
     public ModeloResponse findById(@PathParam("id") Long id) {
         return service.findById(id);
     }
 
     @POST
     @Transactional
+    @RolesAllowed("ADM")
     public Response create(ModeloRequest request) {
         ModeloResponse response = service.create(request);
         return Response.created(URI.create("/modelos/" + response.id())).entity(response).build();
@@ -43,6 +48,7 @@ public class ModeloResource {
     @PUT
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADM")
     public ModeloResponse update(@PathParam("id") Long id, ModeloRequest request) {
         return service.update(id, request);
     }
@@ -50,6 +56,7 @@ public class ModeloResource {
     @DELETE
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADM")
     public Response delete(@PathParam("id") Long id) {
         ModeloResponse modeloDeletado = service.delete(id);
         return Response.ok(modeloDeletado).build();

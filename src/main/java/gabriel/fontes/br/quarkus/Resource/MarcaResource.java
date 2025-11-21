@@ -3,7 +3,8 @@ package gabriel.fontes.br.quarkus.Resource;
 import gabriel.fontes.br.quarkus.Dto.MarcaRequest;
 import gabriel.fontes.br.quarkus.Dto.MarcaResponse;
 import gabriel.fontes.br.quarkus.Service.MarcaService;
-import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -22,18 +23,21 @@ public class MarcaResource {
     MarcaService service;
 
     @GET
+    @PermitAll
     public List<MarcaResponse> findAll() {
         return service.findAll();
     }
 
     @GET
     @Path("/{id}")
+    @PermitAll
     public MarcaResponse findById(@PathParam("id") Long id) {
         return service.findById(id);
     }
 
     @POST
     @Transactional
+    @RolesAllowed("ADM")
     public Response create(MarcaRequest request) {
         MarcaResponse response = service.create(request);
         return Response.created(URI.create("/marcas/" + response.id())).entity(response).build();
@@ -42,6 +46,7 @@ public class MarcaResource {
     @PUT
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADM")
     public MarcaResponse update(@PathParam("id") Long id, MarcaRequest request) {
         return service.update(id, request);
     }
@@ -49,6 +54,7 @@ public class MarcaResource {
     @DELETE
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("ADM")
     public Response delete(@PathParam("id") Long id) {
         MarcaResponse marcaDeletada = service.delete(id);
         return Response.ok(marcaDeletada).build();

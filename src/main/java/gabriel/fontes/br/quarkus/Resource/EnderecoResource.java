@@ -5,6 +5,8 @@ import gabriel.fontes.br.quarkus.Service.EnderecoService;
 import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.EnderecoRequest;
 import gabriel.fontes.br.quarkus.Dto.EnderecoResponse;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -22,14 +24,16 @@ public class EnderecoResource {
 
     @POST
     @Transactional
-    public Response cadastrarEndereco(EnderecoRequest enderecoRequest) {
+    @RolesAllowed("ADM")
+    public Response create(EnderecoRequest enderecoRequest) {
 
         EnderecoResponse enderecoCriado = service.create(enderecoRequest);
         return Response.status(Response.Status.CREATED).entity(enderecoCriado).build();
     }
 
     @GET
-    public Response listarEnderecos() {
+    @PermitAll
+    public Response findAll() {
 
         List<EnderecoResponse> lista = service.findAll();
         return Response.ok(lista).build();
@@ -37,7 +41,8 @@ public class EnderecoResource {
     
     @GET
     @Path("/{id}")
-    public Response buscarPorId(@PathParam("id") Long id) {
+    @PermitAll
+    public Response findById(@PathParam("id") Long id) {
 
         EnderecoResponse endereco = service.findById(id);
         return Response.ok(endereco).build();
@@ -46,7 +51,8 @@ public class EnderecoResource {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public Response deletarEndereco(@PathParam("id") Long id) {
+    @RolesAllowed("ADM")
+    public Response delete(@PathParam("id") Long id) {
 
         EnderecoResponse enderecoDeletado = service.delete(id);
         return Response.ok(enderecoDeletado).build();
@@ -55,7 +61,8 @@ public class EnderecoResource {
     @PUT
     @Path("/{id}")
     @Transactional
-    public Response atualizarEndereco(@PathParam("id") Long id, EnderecoRequest enderecoRequest) {
+    @RolesAllowed("ADM")
+    public Response update(@PathParam("id") Long id, EnderecoRequest enderecoRequest) {
 
         EnderecoResponse enderecoAtualizado = service.update(id, enderecoRequest);
         return Response.ok(enderecoAtualizado).build();

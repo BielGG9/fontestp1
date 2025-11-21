@@ -23,7 +23,7 @@ public abstract class Pessoa extends DefaultEntity { // Continua abstrata
     @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Telefone> telefones;
 
-    // Getters e Setters
+
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
     public String getEmail() { return email; }
