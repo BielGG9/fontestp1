@@ -47,6 +47,7 @@ public class AuthResource {
 
         if (hashService.verificarSenha(authRequest.senha(), usuario.getSenha())) {
             
+            
             String token = tokenService.gerarToken(usuario);
             
             AuthResponse response = AuthResponse.fromEntity(token, usuario);

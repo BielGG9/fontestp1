@@ -7,7 +7,6 @@ public record AuthResponse(
     Long id,
     String token,
     String login,
-    String senha,
     String Perfil
 ) {
 
@@ -17,7 +16,6 @@ public record AuthResponse(
             usuario.getId(),
             token,
             usuario.getLogin(),
-            usuario.getSenha(),
             usuario.getPerfil().name()
         );
     }

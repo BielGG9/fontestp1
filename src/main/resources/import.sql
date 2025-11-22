@@ -81,3 +81,7 @@ INSERT INTO usuarios(nome, login, senha, perfil) VALUES
 
 INSERT INTO usuarios(nome, login, senha, perfil) VALUES
 ('Usuário Padrão', 'user', '$2a$10$SPx2Nbfh7aGUgjlbcU/j5e7puMh0ot/SlmYvstsLYQdHRiu1Cr0oO', 'USER');
+
+
+INSERT INTO usuarios(nome, login, senha, perfil) VALUES
+('Usuario Padrão', 'biel', '4sTLeqhWFGK8raI9YT2teXNBXB6GO7iO', 'USER');
