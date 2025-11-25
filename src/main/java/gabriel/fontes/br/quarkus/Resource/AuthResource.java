@@ -1,14 +1,8 @@
 package gabriel.fontes.br.quarkus.Resource;
 
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Set;
-
 import gabriel.fontes.br.quarkus.Dto.AuthRequest;
 import gabriel.fontes.br.quarkus.Dto.AuthResponse;
-import gabriel.fontes.br.quarkus.Model.Funcionario;
 import gabriel.fontes.br.quarkus.Model.Usuario;
-import gabriel.fontes.br.quarkus.Repository.FuncionarioRepository;
 import gabriel.fontes.br.quarkus.Repository.UsuarioRepository;
 import gabriel.fontes.br.quarkus.Service.HashService;
 import gabriel.fontes.br.quarkus.Service.TokenService;
@@ -20,9 +14,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import io.smallrye.jwt.build.Jwt;
 import jakarta.ws.rs.NotAuthorizedException;
-
 
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -46,7 +38,6 @@ public class AuthResource {
                 .orElseThrow(() -> new NotAuthorizedException("Login Invalido! "));
 
         if (hashService.verificarSenha(authRequest.senha(), usuario.getSenha())) {
-            
             
             String token = tokenService.gerarToken(usuario);
             

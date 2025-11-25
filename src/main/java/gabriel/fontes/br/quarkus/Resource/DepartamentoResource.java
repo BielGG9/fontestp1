@@ -1,7 +1,6 @@
 package gabriel.fontes.br.quarkus.Resource;
 
 import gabriel.fontes.br.quarkus.Service.DepartamentoService;
-import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoRequest;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoResponse;
 import jakarta.annotation.security.PermitAll;
@@ -31,7 +30,7 @@ public class DepartamentoResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response findAll() {
 
         List<DepartamentoResponse> lista = service.findAll();
@@ -40,7 +39,7 @@ public class DepartamentoResource {
     
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response finById(@PathParam("id") Long id) {
 
         DepartamentoResponse departamento = service.findById(id);

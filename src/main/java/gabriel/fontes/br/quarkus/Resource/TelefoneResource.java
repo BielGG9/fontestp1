@@ -1,11 +1,8 @@
 package gabriel.fontes.br.quarkus.Resource;
 
-
 import gabriel.fontes.br.quarkus.Service.TelefoneService;
-import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.TelefoneRequest;
 import gabriel.fontes.br.quarkus.Dto.TelefoneResponse;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -32,7 +29,7 @@ public class TelefoneResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response findAll() {
 
         List<TelefoneResponse> lista = service.findAll();
@@ -41,7 +38,7 @@ public class TelefoneResource {
     
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response findById(@PathParam("id") Long id) {
 
         TelefoneResponse telefone = service.findById(id);

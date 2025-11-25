@@ -31,7 +31,7 @@ public class FuncionarioResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response findAll() {
 
         List<FuncionarioResponse> lista = service.findAll();
@@ -40,7 +40,7 @@ public class FuncionarioResource {
     
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response findById(@PathParam("id") Long id) {
 
         FuncionarioResponse funcionario = service.findById(id);

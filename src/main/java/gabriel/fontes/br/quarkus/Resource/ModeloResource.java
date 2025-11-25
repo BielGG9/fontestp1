@@ -3,7 +3,6 @@ package gabriel.fontes.br.quarkus.Resource;
 import gabriel.fontes.br.quarkus.Dto.ModeloRequest;
 import gabriel.fontes.br.quarkus.Dto.ModeloResponse;
 import gabriel.fontes.br.quarkus.Service.ModeloService;
-import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -25,14 +24,14 @@ public class ModeloResource {
     ModeloService service;
 
     @GET
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public List<ModeloResponse> findAll() {
         return service.findAll();
     }
 
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public ModeloResponse findById(@PathParam("id") Long id) {
         return service.findById(id);
     }

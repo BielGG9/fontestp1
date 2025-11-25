@@ -30,7 +30,7 @@ public class FonteResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response FindAll() {
 
         List<FonteResponse> lista = service.findAll();
@@ -39,7 +39,7 @@ public class FonteResource {
     
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response findById(@PathParam("id") Long id) {
 
         FonteResponse fonte = service.findById(id);

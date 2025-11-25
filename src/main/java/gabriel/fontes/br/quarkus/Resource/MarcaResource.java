@@ -23,14 +23,14 @@ public class MarcaResource {
     MarcaService service;
 
     @GET
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public List<MarcaResponse> findAll() {
         return service.findAll();
     }
 
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public MarcaResponse findById(@PathParam("id") Long id) {
         return service.findById(id);
     }

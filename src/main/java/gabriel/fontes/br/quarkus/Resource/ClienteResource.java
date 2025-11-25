@@ -1,8 +1,5 @@
 package gabriel.fontes.br.quarkus.Resource;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -28,7 +25,7 @@ public class ClienteResource {
     ClienteService service;
 
     @GET
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public List<ClienteResponse> findAll() {
         return service.findAll();
 
@@ -36,7 +33,7 @@ public class ClienteResource {
 
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public ClienteResponse findById(@PathParam("id") Long id) {
         return service.findById(id);
 

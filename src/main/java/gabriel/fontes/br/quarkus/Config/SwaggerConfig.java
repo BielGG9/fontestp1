@@ -15,20 +15,23 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
         version = "1.0.0",
         description = "API com autenticação via Keycloak"
     ),
+
     // Isso aplica a segurança (o cadeado) em toda a API globalmente
     security = @SecurityRequirement(name = "Keycloak")
 )
 @SecurityScheme(
     securitySchemeName = "Keycloak",
-    type = SecuritySchemeType.OAUTH2, // <--- AQUI ESTÁ O SEGREDO (Não é HTTP)
+    type = SecuritySchemeType.OAUTH2, 
     description = "Autenticação via Keycloak",
     flows = @OAuthFlows(
         authorizationCode = @OAuthFlow(
+
             // Ajuste estas URLs se seu realm não for 'meu-realm'
             authorizationUrl = "http://localhost:8080/realms/meu-realm/protocol/openid-connect/auth",
             tokenUrl = "http://localhost:8080/realms/meu-realm/protocol/openid-connect/token"
         )
     )
 )
+
 public class SwaggerConfig extends Application {
 }

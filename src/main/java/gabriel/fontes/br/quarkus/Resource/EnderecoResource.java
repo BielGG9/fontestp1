@@ -2,7 +2,6 @@ package gabriel.fontes.br.quarkus.Resource;
 
 
 import gabriel.fontes.br.quarkus.Service.EnderecoService;
-import io.quarkus.security.Authenticated;
 import gabriel.fontes.br.quarkus.Dto.EnderecoRequest;
 import gabriel.fontes.br.quarkus.Dto.EnderecoResponse;
 import jakarta.annotation.security.PermitAll;
@@ -32,7 +31,7 @@ public class EnderecoResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response findAll() {
 
         List<EnderecoResponse> lista = service.findAll();
@@ -41,7 +40,7 @@ public class EnderecoResource {
     
     @GET
     @Path("/{id}")
-    @PermitAll
+    @RolesAllowed({"USER", "ADM"})
     public Response findById(@PathParam("id") Long id) {
 
         EnderecoResponse endereco = service.findById(id);
