@@ -3,7 +3,6 @@ package gabriel.fontes.br.quarkus.Resource;
 import gabriel.fontes.br.quarkus.Service.DepartamentoService;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoRequest;
 import gabriel.fontes.br.quarkus.Dto.DepartamentoResponse;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

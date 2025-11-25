@@ -4,7 +4,6 @@ package gabriel.fontes.br.quarkus.Resource;
 import gabriel.fontes.br.quarkus.Service.FornecedorService;
 import gabriel.fontes.br.quarkus.Dto.FornecedorRequest;
 import gabriel.fontes.br.quarkus.Dto.FornecedorResponse;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

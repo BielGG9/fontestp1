@@ -1,6 +1,5 @@
 package gabriel.fontes.br.quarkus.Resource;
 
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
