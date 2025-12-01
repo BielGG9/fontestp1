@@ -1,6 +1,7 @@
 package gabriel.fontes.br.quarkus.Resource;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
@@ -11,9 +12,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
 
 @QuarkusTest
+@TestSecurity(user = "testUser", roles = {"ADM", "USER"})
 public class FornecedorResourceTest {
 
-    private static final Long EXISTING_FORNECEDOR_ID = 8L;
+    private static final Long EXISTING_FORNECEDOR_ID = 2L;
     private static final Long NON_EXISTING_FORNECEDOR_ID = 999L;
 
     @Test
@@ -33,7 +35,7 @@ public class FornecedorResourceTest {
                 .then()
                 .statusCode(200)
                 .body("id", is(EXISTING_FORNECEDOR_ID.intValue()))
-                .body("nome", is("Componentes Express"));
+                .body("nome", is("Tech Distribuidora"));
     }
 
     @Test

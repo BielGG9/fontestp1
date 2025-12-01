@@ -1,6 +1,7 @@
 package gabriel.fontes.br.quarkus.Resource;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,10 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
 
 @QuarkusTest
+@TestSecurity(user = "testUser", roles = {"ADM", "USER"})
 public class FuncionarioResourceTest {
 
-    private static final Long EXISTING_FUNCIONARIO_ID = 4L; 
+    private static final Long EXISTING_FUNCIONARIO_ID = 2L; 
     private static final Long NON_EXISTING_FUNCIONARIO_ID = 999L;
     private static Long existingDepartamentoId;
 

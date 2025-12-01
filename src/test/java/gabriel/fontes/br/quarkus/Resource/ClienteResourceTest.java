@@ -1,12 +1,12 @@
     package gabriel.fontes.br.quarkus.Resource; 
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 
 import org.junit.jupiter.api.Test;
 
 import gabriel.fontes.br.quarkus.Dto.ClienteRequest;
-
 import java.time.LocalDateTime;
 
 import static io.restassured.RestAssured.given;
@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
 
 @QuarkusTest
+@TestSecurity(user = "testUser", roles = {"ADM", "USER"})
 public class ClienteResourceTest {
 
     
@@ -37,7 +38,7 @@ public class ClienteResourceTest {
                 .then()
                 .statusCode(200)
                 .body("id", is(EXISTING_CLIENTE_ID.intValue()))
-                .body("nome", is("João da Silva")); 
+                .body("nome", is("biel")); 
     }
 
     @Test

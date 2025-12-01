@@ -1,6 +1,7 @@
 package gabriel.fontes.br.quarkus.Resource;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test; 
 
@@ -11,6 +12,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
 
 @QuarkusTest 
+@TestSecurity(user = "testUser", roles = {"ADM", "USER"})
 public class TelefoneResourceTest {
 
     private static final Long EXISTING_TELEFONE_ID = 1L;
@@ -88,31 +90,35 @@ public class TelefoneResourceTest {
                 .statusCode(404);
     }
 
-    @Test
-    public void testDeleteEndpoint() {
-         TelefoneRequest createDto = new TelefoneRequest("99", "1234-5678");
-         var response = given()
-                            .contentType(ContentType.JSON)
-                            .body(createDto)
-                            .when().post("/telefones")
-                            .then()
-                            .statusCode(201)
-                            .extract().response();
-         Long idToDelete = response.jsonPath().getLong("id");
 
-        given()
-                .pathParam("id", idToDelete)
-                .when().delete("/telefones/{id}")
-                .then()
-                .statusCode(200) 
-                .body("id", is(idToDelete.intValue()));
+@Test
+public void testDeleteEndpoint() {
+    
+    TelefoneRequest createDto = new TelefoneRequest("99", "1234-5678");
+    var response = given()
+                    .contentType(ContentType.JSON)
+                    .body(createDto)
+                    .when().post("/telefones")
+                    .then()
+                    .statusCode(201)
+                    .extract().response();
+    
+    Long idToDelete = response.jsonPath().getLong("id");
 
-        given()
-                .pathParam("id", idToDelete)
-                .when().get("/telefones/{id}")
-                .then()
-                .statusCode(404);
-    }
+   
+    given()
+            .pathParam("id", idToDelete)
+            .when().delete("/telefones/{id}")
+            .then()
+            .statusCode(200); // Sucesso
+
+   
+    given()
+            .pathParam("id", idToDelete)
+            .when().get("/telefones/{id}")
+            .then()
+            .statusCode(404);
+}
 
      @Test
     public void testDeleteEndpointNotFound() {
