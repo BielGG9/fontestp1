@@ -8,6 +8,7 @@ import gabriel.fontes.br.quarkus.Dto.ModeloResponse;
 
 public interface ModeloService {
     
+    
     ModeloResponse create(ModeloRequest dto);
     ModeloResponse update(Long id, ModeloRequest dto);
     ModeloResponse delete(Long id);

@@ -15,10 +15,12 @@ public class ItemPedido extends DefaultEntity {
     private Integer quantidade;
     private Double preco;
 
+    // Relação Muitos-para-Um com Fonte
     @ManyToOne
     @JoinColumn(name = "fonte_id", nullable = false)
     private Fonte fonte;
 
+    // Relação Muitos-para-Um com Pedido
     @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
     private Pedido pedido;

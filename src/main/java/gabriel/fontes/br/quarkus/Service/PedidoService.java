@@ -7,6 +7,7 @@ import gabriel.fontes.br.quarkus.Dto.PedidoResponse;
 
 public interface PedidoService {
     
+    // CRUD - Create, Read, Update, Delete
     PedidoResponse create(PedidoRequest dto);
     PedidoResponse update(Long id, PedidoRequest dto);
     PedidoResponse delete(Long id);

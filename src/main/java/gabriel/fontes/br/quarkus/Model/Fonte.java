@@ -25,6 +25,7 @@ public class Fonte extends DefaultEntity {
     private double preco;
     private Integer estoque;
 
+    // Relação Muitos-para-Muitos com Fornecedor
     @ManyToMany
     @JoinTable(
     name = "fonte_fornecedor", 
@@ -88,5 +89,12 @@ private List<Fornecedor> fornecedores;
     }
     public void setCertificacao(Certificacao certificacao) {
         this.certificacao = certificacao;
+    }
+
+    public List<Fornecedor> getFornecedores() {
+        return fornecedores;
+    }
+    public void setFornecedores(List<Fornecedor> fornecedores) {
+        this.fornecedores = fornecedores;
     }
 }

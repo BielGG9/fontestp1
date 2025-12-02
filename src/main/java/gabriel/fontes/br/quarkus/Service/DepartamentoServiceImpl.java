@@ -22,7 +22,8 @@ public class DepartamentoServiceImpl implements DepartamentoService {
     @Override
     @Transactional 
     public DepartamentoResponse create(DepartamentoRequest dto) {
-
+ 
+        // Criar um novo departamento com os dados fornecidos
         Departamento novoDepartamento = new Departamento();
 
         novoDepartamento.setSigla(dto.sigla());
@@ -35,7 +36,7 @@ public class DepartamentoServiceImpl implements DepartamentoService {
     
     @Override
     public List<DepartamentoResponse> findAll() {
-        
+        // Converter a lista de entidades Departamento para uma lista de DTOs DepartamentoResponse
         return repository.listAll().stream()
                 .map(DepartamentoResponse::fromEntity)
                 .collect(Collectors.toList());
@@ -44,7 +45,8 @@ public class DepartamentoServiceImpl implements DepartamentoService {
     
     @Override
     public DepartamentoResponse findById(Long id) {
-
+    
+        // Buscar o departamento pelo ID e lançar exceção se não encontrado
         Departamento departamento = repository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Departamento com ID " + id + " não encontrado."));
 
@@ -56,6 +58,7 @@ public class DepartamentoServiceImpl implements DepartamentoService {
     @Transactional
     public DepartamentoResponse update(Long id, DepartamentoRequest dto) {
 
+        // Buscar o departamento existente pelo ID
         Departamento departamentoExistente = repository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Departamento com ID " + id + " não encontrado para atualização."));
 
@@ -69,6 +72,7 @@ public class DepartamentoServiceImpl implements DepartamentoService {
     @Override
     @Transactional
     public DepartamentoResponse delete(Long id) {
+        // Verificar se o departamento existe antes de deletar
         Departamento departamentoExistente = repository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Departamento com ID " + id + " não encontrado para exclusão."));
 

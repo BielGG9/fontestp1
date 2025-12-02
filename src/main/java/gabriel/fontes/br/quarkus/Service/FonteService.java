@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface FonteService {
 
+    // CRUD - Create, Read, Update, Delete
     FonteResponse create(FonteRequest dto);
     FonteResponse update(Long id, FonteRequest dto);
     FonteResponse delete(Long id);

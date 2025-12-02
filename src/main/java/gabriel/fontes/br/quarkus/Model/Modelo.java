@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 public class Modelo  extends DefaultEntity {
     
     private int numeracao;
-
+    // Relação Muitos-para-Um com Marca
     @ManyToOne(optional = false)
     private Marca marca;
 

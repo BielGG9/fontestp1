@@ -7,14 +7,11 @@ import gabriel.fontes.br.quarkus.Dto.EnderecoResponse;
 
 public interface EnderecoService {
 
+    // CRUD - Create, Read, Update, Delete
     EnderecoResponse create(EnderecoRequest dto);
-
     EnderecoResponse update(Long id, EnderecoRequest dto);
-
     EnderecoResponse delete(Long id);
-
     List<EnderecoResponse> findAll();
-
     EnderecoResponse findById(Long id);
     
 }

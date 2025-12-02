@@ -24,8 +24,11 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     DepartamentoRepository departamentoRepository;
 
     public List<FuncionarioResponse> buscarFuncionariosPorNome(String termoDeBusca) {
+
+        // Usar o repositório para buscar funcionários cujo nome contenha o termo de busca (ignorando maiúsculas/minúsculas)
         List<Funcionario> funcionariosEncontrados = repository.findByNomeContendo(termoDeBusca);
 
+        // Converter a lista de entidades Funcionario para uma lista de DTOs FuncionarioResponse
         return funcionariosEncontrados.stream()
                 .map(FuncionarioResponse::fromEntity)
                 .collect(Collectors.toList());
@@ -34,6 +37,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     @Transactional
     public FuncionarioResponse create(FuncionarioRequest dto) {
+
+        // Criar um novo funcionário com os dados fornecidos
         Funcionario novoFuncionario = new Funcionario();
         novoFuncionario.setNome(dto.nome());
         novoFuncionario.setEmail(dto.email());
@@ -41,6 +46,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         novoFuncionario.setRg(dto.rg());
         novoFuncionario.setCargo(dto.cargo());
 
+        // Associar o funcionário a um departamento existente
         Long departamentoId;
         try {
             departamentoId = Long.parseLong(dto.departamento());
@@ -48,6 +54,7 @@ public class FuncionarioServiceImpl implements FuncionarioService {
             throw new NotFoundException("ID do departamento inválido: " + dto.departamento());
         }
 
+        // Buscar o departamento pelo ID fornecido
         Departamento departamento = departamentoRepository.findByIdOptional(departamentoId)
                 .orElseThrow(() -> new NotFoundException("Departamento com ID " + departamentoId + " não encontrado."));
 
@@ -60,6 +67,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     @Transactional
     public FuncionarioResponse update(Long id, FuncionarioRequest dto) {
+
+        // Buscar o funcionário existente pelo ID
         Funcionario funcionario = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Funcionario com id " + id + " não encontrado."));
 
@@ -69,12 +78,14 @@ public class FuncionarioServiceImpl implements FuncionarioService {
         funcionario.setRg(dto.rg());
         funcionario.setCargo(dto.cargo());
 
+        // Atualizar o departamento associado
         Long departamentoId;
          try {
             departamentoId = Long.parseLong(dto.departamento());
         } catch (NumberFormatException e) {
             throw new NotFoundException("ID do departamento inválido: " + dto.departamento());
         }
+        // Buscar o departamento pelo ID fornecido
         Departamento departamento = departamentoRepository.findByIdOptional(departamentoId)
                 .orElseThrow(() -> new NotFoundException("Departamento com ID " + departamentoId + " não encontrado."));
         funcionario.setDepartamento(departamento);
@@ -85,9 +96,12 @@ public class FuncionarioServiceImpl implements FuncionarioService {
     @Override
     @Transactional
     public FuncionarioResponse delete(Long id) {
+
+        // Verificar se o funcionário existe antes de deletar
         Funcionario funcionarioExistente = repository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Funcionario com ID " + id + " não encontrado para exclusão."));
 
+            // Excluir o funcionário e retornar a resposta
             FuncionarioResponse resposta = FuncionarioResponse.fromEntity(funcionarioExistente);
             repository.delete(funcionarioExistente);
             return resposta;
@@ -95,6 +109,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
     @Override
     public List<FuncionarioResponse> findAll() {
+
+        // Buscar todos os funcionários
         return repository.listAll().stream()
                 .map(FuncionarioResponse::fromEntity)
                 .collect(Collectors.toList());
@@ -102,6 +118,8 @@ public class FuncionarioServiceImpl implements FuncionarioService {
 
     @Override
     public FuncionarioResponse findById(Long id) {
+
+        // Buscar o funcionário pelo ID e lançar exceção se não encontrado
         Funcionario funcionario = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Funcionario com id " + id + " não encontrado."));
         return FuncionarioResponse.fromEntity(funcionario);

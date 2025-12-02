@@ -23,7 +23,6 @@ public class DepartamentoResource {
     @Transactional
     @RolesAllowed("ADM")
     public Response create(DepartamentoRequest departamentoRequest) {
-
         DepartamentoResponse departamentoCriado = service.create(departamentoRequest);
         return Response.status(Response.Status.CREATED).entity(departamentoCriado).build();
     }

@@ -11,10 +11,6 @@ public record PedidoRequest(
     @NotBlank(message = "O nome do cliente é obrigatório")
     String nomeCliente,
 
-    Double total,
-
-    LocalDateTime data,
-
     @NotBlank(message = "O endereço de entrega é obrigatório")
     Long idEnderecoEntrega,
 

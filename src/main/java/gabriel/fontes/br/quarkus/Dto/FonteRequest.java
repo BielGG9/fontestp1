@@ -1,6 +1,9 @@
 package gabriel.fontes.br.quarkus.Dto;
 
 import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
@@ -24,7 +27,9 @@ public record FonteRequest(
     Long idModelo,
 
     @NotBlank(message = "A certificação deve conter ao menos 1 caractere")
-    String certificacao
+    String certificacao,
+
+    List<Long> idFornecedores
     
 ) {}
  

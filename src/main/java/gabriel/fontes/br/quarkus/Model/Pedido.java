@@ -23,6 +23,7 @@ public class Pedido extends DefaultEntity{
     @Column(nullable = false)
     private Double total;
 
+    // Define o ID do usuário do Keycloak associado ao pedido
     @Column(name = "id_usuario_keycloack")
     private String idUsuario;
     private String nomeClienteSnapshot;
@@ -30,7 +31,7 @@ public class Pedido extends DefaultEntity{
     @Column(nullable = false)
     private TipoPagamento tipoPagamento;
 
-
+    // Relação Um-para-Muitos com ItemPedido com cascade persist
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.PERSIST)
     private List<ItemPedido> itensPedido;
 

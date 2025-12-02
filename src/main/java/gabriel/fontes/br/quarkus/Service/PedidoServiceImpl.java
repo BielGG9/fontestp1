@@ -53,24 +53,30 @@ public class PedidoServiceImpl implements PedidoService {
     @Transactional
     public PedidoResponse create(PedidoRequest dto) {
 
+        // 2. Validar e obter dados do cliente autenticado
         ClienteResponse clienteResponse = clienteService.getMeuPerfil();
         
         // 1. Obter dados do usuário autenticado via Keycloak
         String idUsuarioKeycloak = jwt.getSubject();
 
+        // Buscar o cliente autenticado no banco de dados
         Cliente clienteAutenticado = clienteRepository.findByIdKeycloak(idUsuarioKeycloak);
         
+        // Verificar se o cliente autenticado foi encontrado
         if (clienteAutenticado == null) {
             throw new ForbiddenException("Cadastro de cliente não encontrado para o usuário autenticado.");
         }
 
+        // Extrair outras informações do token JWT, se necessário
         String emailUsuarioKeycloak = jwt.getClaim("email");
         System.out.println("Email do usuário autenticado: " + emailUsuarioKeycloak);
         String nomeUsuarioKeycloak = jwt.getClaim("name");
         
+        // Validar o endereço de entrega
         Endereco enderecoBanco = enderecoRepository.findByIdOptional(dto.idEnderecoEntrega())
                 .orElseThrow(() -> new NotFoundException("Endereço não encontrado com id: " + dto.idEnderecoEntrega()));
 
+        // Verificar se o endereço pertence ao cliente autenticado
         if (!enderecoBanco.getPessoa().getId().equals(clienteAutenticado.getId())) {
             throw new ForbiddenException("O endereço informado não pertence ao cliente autenticado.");
         }
@@ -106,8 +112,10 @@ public class PedidoServiceImpl implements PedidoService {
         List<ItemPedido> itensParaSalvar = new ArrayList<>();
 
        
+        // Corrigido para usar itemDto dentro do loop
         for (ItemPedidoRequest itemDto : dto.itensPedido()) {
             
+            // Buscar a fonte pelo ID fornecido
             Fonte fonte = fonteRepository.findByIdOptional(itemDto.fonteId())
                     .orElseThrow(() -> new BadRequestException("Fonte não encontrada: " + itemDto.fonteId()));
 
@@ -131,6 +139,7 @@ public class PedidoServiceImpl implements PedidoService {
             itensParaSalvar.add(itemPedido);
         }
 
+        // 7. Finalizar Pedido
         pedido.setTotal(total);      
         pedido.setItens(itensParaSalvar);
 
@@ -142,6 +151,8 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public List<PedidoResponse> findAll() {
+        
+        // Buscar todos os pedidos
         List<Pedido> pedidos = pedidoRepository.listAll();
         return pedidos.stream()
                 .map(PedidoResponse::fromEntity)
@@ -151,6 +162,8 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public PedidoResponse findById(Long id) {
+
+        // Buscar o pedido pelo ID e lançar exceção se não encontrado
         Pedido pedido = pedidoRepository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado com id: " + id));
         return PedidoResponse.fromEntity(pedido);
@@ -159,9 +172,12 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public PedidoResponse delete(Long id) {
+
+        // Buscar o pedido pelo ID e lançar exceção se não encontrado
         Pedido pedido = pedidoRepository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado com id: " + id));
         
+                // Excluir o pedido e retornar a resposta
                 PedidoResponse resposta = PedidoResponse.fromEntity(pedido);
                 pedidoRepository.delete(pedido);
                 return resposta;
@@ -170,6 +186,8 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public PedidoResponse update(Long id, PedidoRequest dto) {
+
+        // Buscar o pedido pelo ID e lançar exceção se não encontrado
         Pedido pedido = pedidoRepository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado com id: " + id));
         
@@ -182,10 +200,14 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public List<PedidoResponse> MeusPedidos() {
+
+        // Obter o ID do usuário autenticado via Keycloak
         String idUsuarioKeycloak = jwt.getSubject();
 
+        // Buscar os pedidos associados ao usuário autenticado
         List<Pedido> pedidosDoUsuario = pedidoRepository.findByUsuarioId(idUsuarioKeycloak);
 
+        // Converter a lista de entidades Pedido para uma lista de DTOs PedidoResponse
         return pedidosDoUsuario.stream()
                 .map(PedidoResponse::fromEntity)
                 .toList();

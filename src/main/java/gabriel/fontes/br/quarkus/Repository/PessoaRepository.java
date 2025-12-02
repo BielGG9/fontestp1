@@ -7,4 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class PessoaRepository implements PanacheRepository<Pessoa> {
     
+    public Pessoa findByCpf(String cpf) {
+        return find("cpf", cpf).firstResult();
+    }
 }

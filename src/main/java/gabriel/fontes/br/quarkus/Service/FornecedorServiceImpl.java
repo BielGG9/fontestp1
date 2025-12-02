@@ -19,6 +19,8 @@ public class FornecedorServiceImpl implements FornecedorService {
     FornecedorRepository repository;
 
     public List<FornecedorResponse> buscarFornecedoresPorNome(String termoDeBusca) {
+
+        // Usar o repositório para buscar fornecedores cujo nome contenha o termo de busca (ignorando maiúsculas/minúsculas)
         List<Fornecedor> fornecedoresEncontrados = repository.findByNomeContendo(termoDeBusca);
 
         return fornecedoresEncontrados.stream()
@@ -29,6 +31,8 @@ public class FornecedorServiceImpl implements FornecedorService {
     @Override
     @Transactional
     public FornecedorResponse create(FornecedorRequest dto) {
+
+        // Criar um novo fornecedor com os dados fornecidos
         Fornecedor novoFornecedor = new Fornecedor();
         novoFornecedor.setNome(dto.nome());
         novoFornecedor.setEmail(dto.email());
@@ -43,6 +47,8 @@ public class FornecedorServiceImpl implements FornecedorService {
     @Override
     @Transactional
     public FornecedorResponse update(Long id, FornecedorRequest dto) {
+        
+        // Buscar o fornecedor existente pelo ID
         Fornecedor fornecedor = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Fornecedor com id " + id + " não encontrado."));
 
@@ -58,6 +64,7 @@ public class FornecedorServiceImpl implements FornecedorService {
     @Override
     @Transactional
     public FornecedorResponse delete(Long id) {
+        // Verificar se o fornecedor existe antes de deletar
         Fornecedor fornecedorExistente = repository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Fornecedor com ID " + id + " não encontrado para exclusão."));
 
@@ -68,6 +75,7 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     @Override
     public List<FornecedorResponse> findAll() {
+        // Buscar todos os fornecedores
         return repository.listAll().stream()
                 .map(FornecedorResponse::fromEntity)
                 .collect(Collectors.toList());
@@ -75,6 +83,8 @@ public class FornecedorServiceImpl implements FornecedorService {
 
     @Override
     public FornecedorResponse findById(Long id) {
+
+        // Buscar o fornecedor pelo ID e lançar exceção se não encontrado
         Fornecedor fornecedor = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Fornecedor com id " + id + " não encontrado."));
         return FornecedorResponse.fromEntity(fornecedor);

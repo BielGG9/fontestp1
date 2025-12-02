@@ -15,6 +15,7 @@ public class Telefone extends DefaultEntity {
     private String numero;
     private String ddd;
 
+    // Relação Muitos-para-Um com Pessoa
     @ManyToOne
     @JoinColumn(name = "pessoa_id")
     @JsonIgnore

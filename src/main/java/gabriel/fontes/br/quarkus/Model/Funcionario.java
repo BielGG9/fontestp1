@@ -14,6 +14,7 @@ public class Funcionario extends PessoaFisica {
 
     private String password;
 
+    // Relação Muitos-para-Um com Departamento
     @ManyToOne(optional = false)
     @JoinColumn(name = "departamento_id")
     private Departamento departamento;

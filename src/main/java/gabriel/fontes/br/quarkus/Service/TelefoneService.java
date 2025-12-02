@@ -6,6 +6,7 @@ import gabriel.fontes.br.quarkus.Dto.TelefoneResponse;
 
 public interface TelefoneService {
 
+    // CRUD - Create, Read, Update, Delete
     TelefoneResponse findById(Long id);
     List<TelefoneResponse> findAll();
     TelefoneResponse delete(Long id);

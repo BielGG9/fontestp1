@@ -24,6 +24,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     @Inject
     PessoaRepository pessoaRepository;
 
+    // Implementação de um método de busca personalizada
     public List<EnderecoResponse> buscarEnderecosPorRua(String parametroDeBusca) {
         List<Endereco> enderecosEncontrados = repository.findByNomeContendo(parametroDeBusca); // Ajustar query se necessário
 
@@ -35,6 +36,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     @Override
     @Transactional
     public EnderecoResponse create(EnderecoRequest dto) {
+        // Criar um novo endereço com os dados fornecidos
         Endereco novoEndereco = new Endereco();
         novoEndereco.setRua(dto.rua());
         novoEndereco.setNumero(dto.numero());
@@ -44,6 +46,7 @@ public class EnderecoServiceImpl implements EnderecoService {
         novoEndereco.setEstado(dto.estado());
         novoEndereco.setCep(dto.cep());
 
+        // Associar o endereço a uma pessoa existente
         if (dto.idPessoa() != null) {
         Pessoa pessoa = pessoaRepository.findById(dto.idPessoa());
         if (pessoa == null) {
@@ -61,6 +64,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     @Override
     @Transactional
     public EnderecoResponse update(Long id, EnderecoRequest dto) {
+        // Buscar o endereço existente pelo ID
         Endereco endereco = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Endereco com id " + id + " não encontrado."));
 
@@ -78,6 +82,7 @@ public class EnderecoServiceImpl implements EnderecoService {
     @Override
     @Transactional
     public EnderecoResponse delete(Long id) {
+        // Verificar se o endereço existe antes de deletar
         Endereco enderecoExistente = repository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Endereco com ID " + id + " não encontrado para exclusão."));
 
@@ -88,6 +93,7 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Override
     public List<EnderecoResponse> findAll() {
+        // Converter a lista de entidades Endereco para uma lista de DTOs EnderecoResponse
         return repository.listAll().stream()
                 .map(EnderecoResponse::fromEntity)
                 .collect(Collectors.toList());
@@ -95,6 +101,7 @@ public class EnderecoServiceImpl implements EnderecoService {
 
     @Override
     public EnderecoResponse findById(Long id) {
+        // Buscar o endereço pelo ID e lançar exceção se não encontrado
         Endereco endereco = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Endereco com id " + id + " não encontrado."));
         return EnderecoResponse.fromEntity(endereco);

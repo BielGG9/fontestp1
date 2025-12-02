@@ -14,6 +14,7 @@ public class Fornecedor extends PessoaJuridica{
 
     private String razaoSocial;
 
+    // Relação Muitos-para-Muitos com Fonte
     @ManyToMany(mappedBy = "fornecedores")
     private List<Fonte> fontes;
 
