@@ -181,15 +181,14 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
-    public List<PedidoResponse> buscarHistoricoPedido(String nomeCliente, Long fonteId, Long ItensPedidoId) {
-        List<Pedido> pedidos = pedidoRepository.buscarPorFiltros(nomeCliente, fonteId, ItensPedidoId);
-        List<PedidoResponse> respostas = pedidos.stream()
+    public List<PedidoResponse> MeusPedidos() {
+        String idUsuarioKeycloak = jwt.getSubject();
+
+        List<Pedido> pedidosDoUsuario = pedidoRepository.findByUsuarioId(idUsuarioKeycloak);
+
+        return pedidosDoUsuario.stream()
                 .map(PedidoResponse::fromEntity)
                 .toList();
-        if (respostas.isEmpty()) {
-            throw new NotFoundException("Nenhum pedido encontrado com os filtros fornecidos.");
-        }
-        return respostas;
     }
-
+        
 }
