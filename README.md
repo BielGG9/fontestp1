@@ -1,79 +1,59 @@
-# fontestp1
+# ⚡ Fontes Store API
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Este projeto é uma API REST robusta desenvolvida para o gerenciamento de um e-commerce especializado em **Fontes de Alimentação para PC (PSUs)**.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+O sistema gerencia todo o fluxo de vendas, desde o cadastro de produtos técnicos (marcas, modelos, certificações) até o processamento de pedidos com baixa de estoque e controle de usuários via autenticação moderna.
 
-## Running the application in dev mode
+---
 
-You can run your application in dev mode that enables live coding using:
+## 🚀 Tecnologias Utilizadas
 
-```shell script
-./mvnw quarkus:dev
-```
+O projeto foi construído utilizando as melhores práticas do ecossistema Java moderno:
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+* **[Quarkus](https://quarkus.io/):** Framework Supersonic Subatomic Java.
+* **Java 21:** Linguagem base.
+* **PostgreSQL:** Banco de dados relacional.
+* **Hibernate ORM com Panache:** Persistência de dados simplificada (Active Record/Repository).
+* **Keycloak (OIDC):** Servidor de Identidade e Gestão de Acesso (IAM).
+* **Docker:** Containerização do banco de dados e Keycloak.
+* **Swagger UI (OpenAPI):** Documentação interativa da API.
+* **JUnit 5 & RestAssured:** Testes unitários e de integração.
 
-## Packaging and running the application
+---
 
-The application can be packaged using:
+## 📦 Funcionalidades do Sistema
 
-```shell script
-./mvnw package
-```
+### 🛒 Gestão de Produtos (Catálogo)
+* **Fontes:** Cadastro detalhado com potência (W), preço, estoque e certificação (Bronze, Silver, Gold, etc).
+* **Marcas e Modelos:** Organização hierárquica dos produtos.
+* **Fornecedores:** Gestão de quem fornece os produtos (Relacionamento Many-to-Many).
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+### 👤 Gestão de Usuários
+* **Perfis de Acesso:** Separação entre `ADM` (Administrador) e `USER` (Cliente).
+* **Hierarquia de Pessoas:**
+    * **Cliente:** Possui histórico de compras e dados pessoais.
+    * **Funcionário:** Vinculado a departamentos (TI, Vendas, etc).
+* **Integração OAuth2:** Login seguro via Token JWT gerado pelo Keycloak.
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+### 🛍️ Fluxo de Pedidos (Core Business)
+* **Carrinho de Compras:** Adição de múltiplos itens em um único pedido.
+* **Validação de Estoque:** O sistema impede vendas se não houver estoque suficiente.
+* **Snapshot de Preço:** O preço do item é gravado no momento da compra (proteção contra alteração futura de preços).
+* **Snapshot de Endereço:** O endereço de entrega é copiado para o pedido, garantindo histórico mesmo se o cliente mudar de casa.
+* **Histórico:** O cliente visualiza apenas os seus próprios pedidos.
 
-If you want to build an _über-jar_, execute the following command:
+---
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+## 🛠️ Como Rodar o Projeto
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### 1. Pré-requisitos
+* JDK 17 ou 21+
+* Docker (para subir o Banco e o Keycloak)
+* Maven
 
-## Creating a native executable
+### 2. Subindo a Infraestrutura (Docker)
+Antes de iniciar a aplicação, você precisa do PostgreSQL e do Keycloak rodando.
 
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/fontestp1-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
-- JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
-
-## Provided Code
-
-### Hibernate ORM
-
-Create your first JPA entity
-
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
-
-[Related Hibernate with Panache section...](https://quarkus.io/guides/hibernate-orm-panache)
-
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+**PostgreSQL:**
+```shell
+docker run --name postgres-db -e POSTGRES_USER=bieltp1 -e POSTGRES_PASSWORD=150326 -e POSTGRES_DB=gbtp1 -p 5432:5432 -d postgres
