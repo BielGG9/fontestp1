@@ -19,6 +19,9 @@ public class ClienteRepository implements PanacheRepository<Cliente>{
         String parametroDeBusca = "%" + texto.toUpperCase() + "%";
                 return find("upper(nome) LIKE ?1", parametroDeBusca).list();
     }
-
+    
+    public Cliente findByIdKeycloak(String idKeycloak) {
+        return find("idKeycloak", idKeycloak).firstResult();
+    }
 
 }

@@ -31,6 +31,15 @@ public class ClienteResource {
     }
 
     @GET
+    @Path("/meu-perfil")
+    @RolesAllowed({"USER", "ADM"})
+    public Response getMeuPerfil() {
+        ClienteResponse meuPerfil = service.getMeuPerfil();
+        return Response.ok(meuPerfil).build();
+
+    }
+
+    @GET
     @Path("/{id}")
     @RolesAllowed({"USER", "ADM"})
     public ClienteResponse findById(@PathParam("id") Long id) {

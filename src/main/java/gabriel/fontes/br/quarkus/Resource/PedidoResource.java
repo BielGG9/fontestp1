@@ -37,6 +37,19 @@ public class PedidoResource {
         return service.findById(id);
     }
 
+    @GET
+    @Path("/historico/{id}")
+    @RolesAllowed({"USER", "ADM"})
+    public Response buscarHistoricoPedido(
+    @QueryParam("nomeCliente") String nomeCliente,
+    @QueryParam("fonteId") Long fonteId,
+    @QueryParam("itensPedidoId") Long ItensPedidoId) {
+    
+    List<PedidoResponse> buscarHistoricoPedido = service.buscarHistoricoPedido(nomeCliente, fonteId, ItensPedidoId);
+        return Response.ok(buscarHistoricoPedido).build();
+
+    }
+
     @POST
     @Transactional
     @RolesAllowed({"USER", "ADM"})

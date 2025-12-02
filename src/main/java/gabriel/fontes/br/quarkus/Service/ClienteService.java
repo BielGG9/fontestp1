@@ -4,6 +4,7 @@ import java.util.List;
 
 import gabriel.fontes.br.quarkus.Dto.ClienteRequest;
 import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
+import gabriel.fontes.br.quarkus.Model.Cliente;
 
 public interface ClienteService {
     
@@ -12,5 +13,7 @@ public interface ClienteService {
     ClienteResponse delete(Long id);
     List<ClienteResponse> findAll();
     ClienteResponse findById(Long id);
+    ClienteResponse getMeuPerfil();
+    
     
 }

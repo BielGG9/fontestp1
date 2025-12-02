@@ -6,16 +6,18 @@ import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-
+import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
 import gabriel.fontes.br.quarkus.Dto.ItemPedidoRequest;
 import gabriel.fontes.br.quarkus.Dto.PedidoRequest;
 import gabriel.fontes.br.quarkus.Dto.PedidoResponse;
+import gabriel.fontes.br.quarkus.Model.Cliente;
 import gabriel.fontes.br.quarkus.Model.Endereco;
 import gabriel.fontes.br.quarkus.Model.EnderecoEntrega;
 import gabriel.fontes.br.quarkus.Model.Fonte;
 import gabriel.fontes.br.quarkus.Model.ItemPedido;
 import gabriel.fontes.br.quarkus.Model.Pedido;
 import gabriel.fontes.br.quarkus.Model.Enums.TipoPagamento;
+import gabriel.fontes.br.quarkus.Repository.ClienteRepository;
 import gabriel.fontes.br.quarkus.Repository.EnderecoRepository;
 import gabriel.fontes.br.quarkus.Repository.FonteRepository;
 import gabriel.fontes.br.quarkus.Repository.PedidoRepository;
@@ -23,6 +25,7 @@ import io.quarkus.security.ForbiddenException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
@@ -38,36 +41,49 @@ public class PedidoServiceImpl implements PedidoService {
     EnderecoRepository enderecoRepository;
 
     @Inject
+    ClienteRepository clienteRepository;
+
+    @Inject
+    ClienteService clienteService;
+
+    @Inject
     JsonWebToken jwt;
 
     @Override
     @Transactional
     public PedidoResponse create(PedidoRequest dto) {
+
+        ClienteResponse clienteResponse = clienteService.getMeuPerfil();
         
         // 1. Obter dados do usuário autenticado via Keycloak
         String idUsuarioKeycloak = jwt.getSubject();
+
+        Cliente clienteAutenticado = clienteRepository.findByIdKeycloak(idUsuarioKeycloak);
+        
+        if (clienteAutenticado == null) {
+            throw new ForbiddenException("Cadastro de cliente não encontrado para o usuário autenticado.");
+        }
+
         String emailUsuarioKeycloak = jwt.getClaim("email");
         System.out.println("Email do usuário autenticado: " + emailUsuarioKeycloak);
         String nomeUsuarioKeycloak = jwt.getClaim("name");
-
-        // 2. Validar se o endereço pertence ao usuário autenticado
+        
         Endereco enderecoBanco = enderecoRepository.findByIdOptional(dto.idEnderecoEntrega())
-                .orElseThrow(() -> new NotFoundException("Endereço não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Endereço não encontrado com id: " + dto.idEnderecoEntrega()));
 
-        System.out.println("Email do dono do endereço: " + enderecoBanco.getPessoa().getEmail());
-
-        if (!enderecoBanco.getPessoa().getEmail().equals(emailUsuarioKeycloak)) {
-            throw new ForbiddenException("Email não pertence ao usuário autenticado");
+        if (!enderecoBanco.getPessoa().getId().equals(clienteAutenticado.getId())) {
+            throw new ForbiddenException("O endereço informado não pertence ao cliente autenticado.");
         }
 
         // 3. Mapear Pedido
         Pedido pedido = new Pedido();
         pedido.setIdUsuario(idUsuarioKeycloak);
-        pedido.setNomeClienteSnapshot(nomeUsuarioKeycloak != null ? nomeUsuarioKeycloak : "Cliente Keycloak");
+
+        pedido.setNomeClienteSnapshot(clienteAutenticado.getNome());
         pedido.setData(LocalDateTime.now());
+       
 
         // 4. Mapear Endereço (Snapshot)
-        // CORREÇÃO: Usar EnderecoEntrega (o Embeddable) e não Endereco (a Entidade)
         EnderecoEntrega enderecoEntrega = new EnderecoEntrega();
         enderecoEntrega.setRua(enderecoBanco.getRua());
         enderecoEntrega.setNumero(enderecoBanco.getNumero());
@@ -76,7 +92,6 @@ public class PedidoServiceImpl implements PedidoService {
         enderecoEntrega.setCidade(enderecoBanco.getCidade());
         enderecoEntrega.setEstado(enderecoBanco.getEstado());
         enderecoEntrega.setCep(enderecoBanco.getCep());
-        
         pedido.setEnderecoEntrega(enderecoEntrega);
 
         // 5. Pagamento (Adicionado tratamento de erro)
@@ -93,13 +108,12 @@ public class PedidoServiceImpl implements PedidoService {
        
         for (ItemPedidoRequest itemDto : dto.itensPedido()) {
             
-            // CORREÇÃO: itemDto.idProduto() -> nome correto do campo no Request
             Fonte fonte = fonteRepository.findByIdOptional(itemDto.fonteId())
-                    .orElseThrow(() -> new RuntimeException("Fonte não encontrada: " + itemDto.fonteId()));
+                    .orElseThrow(() -> new BadRequestException("Fonte não encontrada: " + itemDto.fonteId()));
 
             // Verificar estoque
             if (fonte.getEstoque() < itemDto.quantidade()) {
-                throw new RuntimeException("Estoque insuficiente para a fonte: " + fonte.getNome());
+                throw new BadRequestException("Estoque insuficiente para a fonte: " + fonte.getNome());
             }
             
             // Baixar estoque
@@ -164,6 +178,18 @@ public class PedidoServiceImpl implements PedidoService {
         // Atualizar outros campos conforme necessário
 
         return PedidoResponse.fromEntity(pedido);
+    }
+
+    @Override
+    public List<PedidoResponse> buscarHistoricoPedido(String nomeCliente, Long fonteId, Long ItensPedidoId) {
+        List<Pedido> pedidos = pedidoRepository.buscarPorFiltros(nomeCliente, fonteId, ItensPedidoId);
+        List<PedidoResponse> respostas = pedidos.stream()
+                .map(PedidoResponse::fromEntity)
+                .toList();
+        if (respostas.isEmpty()) {
+            throw new NotFoundException("Nenhum pedido encontrado com os filtros fornecidos.");
+        }
+        return respostas;
     }
 
 }
