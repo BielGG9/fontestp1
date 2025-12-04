@@ -1,33 +1,23 @@
 package gabriel.fontes.br.quarkus.Model;
 
+
 import java.time.LocalDateTime;
 
-
 import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
-import gabriel.fontes.br.quarkus.Model.Enums.TipoPagamento;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Pagamento extends DefaultEntity{
-    
-    private LocalDateTime dataPagamento;
+public abstract class Pagamento extends DefaultEntity{
 
+    private String status;
+    private LocalDateTime dataPagamento;
     private Double valor;
 
-    private TipoPagamento tipoPagamento;
 
     public Pagamento() {
-    }
-
-    public TipoPagamento getTipoPagamento() {
-        return tipoPagamento;
-    }
-
-    public void setTipoPagamento(TipoPagamento tipoPagamento) {
-        this.tipoPagamento = tipoPagamento;
     }
 
     public Double getValor() {
@@ -37,13 +27,20 @@ public class Pagamento extends DefaultEntity{
     public void setValor(Double valor) {
         this.valor = valor;
     }
-    
+
+    public String getStatus() {
+        return status;
+    }
 
     public LocalDateTime getDataPagamento() {
         return dataPagamento;
     }
+
     public void setDataPagamento(LocalDateTime dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

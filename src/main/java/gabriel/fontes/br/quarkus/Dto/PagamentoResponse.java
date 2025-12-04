@@ -1,19 +1,26 @@
 package gabriel.fontes.br.quarkus.Dto;
 
-public record PagamentoResponse(
-    String tipo,
-    Double valor,
-    String status,
+import gabriel.fontes.br.quarkus.Model.Boleto;
+import gabriel.fontes.br.quarkus.Model.Cartao;
+import gabriel.fontes.br.quarkus.Model.Pagamento;
+import gabriel.fontes.br.quarkus.Model.Pix;
 
-    String chavePix,
-    String codigoBarras,
-    String finalCartao
-) {
+public record PagamentoResponse(Object pagamento) {
 
-    public static PagamentoResponse pix(Double valor, String chavePix) {
-        return new PagamentoResponse("PIX", valor, "PENDENTE", chavePix, null, null);
+    public static PagamentoResponse fromEntity(Pagamento pagamento) {
+
+        if (pagamento instanceof Pix pix) {
+            return new PagamentoResponse(PixResponse.fromEntity(pix));
+        }
+
+        if (pagamento instanceof Cartao c) {
+            return new PagamentoResponse(CartaoResponse.fromEntity(c));
+        }
+
+        if (pagamento instanceof Boleto b) {
+            return new PagamentoResponse(BoletoResponse.fromEntity(b));
+        }
+
+        return null;
     }
 }
-    
-
-

@@ -2,6 +2,11 @@ package gabriel.fontes.br.quarkus.Model;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "boleto")
 public class Boleto extends Pagamento{
     
     private String codigoBarras;

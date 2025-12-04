@@ -14,5 +14,6 @@ public interface PedidoService {
     List<PedidoResponse> findAll();
     PedidoResponse findById(Long id);
     List<PedidoResponse> MeusPedidos();
+    void realizarPedido(PedidoRequest pedidoRequest);
 
 }

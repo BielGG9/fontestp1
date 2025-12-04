@@ -7,9 +7,9 @@ import java.util.List;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
-import gabriel.fontes.br.quarkus.Dto.ItemPedidoRequest;
 import gabriel.fontes.br.quarkus.Dto.PedidoRequest;
 import gabriel.fontes.br.quarkus.Dto.PedidoResponse;
+import gabriel.fontes.br.quarkus.Dto.ItemPedidoRequest; 
 import gabriel.fontes.br.quarkus.Model.Boleto;
 import gabriel.fontes.br.quarkus.Model.Cartao;
 import gabriel.fontes.br.quarkus.Model.Cliente;
@@ -20,10 +20,11 @@ import gabriel.fontes.br.quarkus.Model.ItemPedido;
 import gabriel.fontes.br.quarkus.Model.Pagamento;
 import gabriel.fontes.br.quarkus.Model.Pedido;
 import gabriel.fontes.br.quarkus.Model.Pix;
-import gabriel.fontes.br.quarkus.Model.Enums.TipoPagamento;
+import gabriel.fontes.br.quarkus.Repository.CartaoRepository;
 import gabriel.fontes.br.quarkus.Repository.ClienteRepository;
 import gabriel.fontes.br.quarkus.Repository.EnderecoRepository;
 import gabriel.fontes.br.quarkus.Repository.FonteRepository;
+import gabriel.fontes.br.quarkus.Repository.PagamentoRepository;
 import gabriel.fontes.br.quarkus.Repository.PedidoRepository;
 import io.quarkus.security.ForbiddenException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -34,7 +35,7 @@ import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class PedidoServiceImpl implements PedidoService {
-    
+
     @Inject
     PedidoRepository pedidoRepository;
 
@@ -43,6 +44,12 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Inject
     EnderecoRepository enderecoRepository;
+
+    @Inject
+    PagamentoRepository pagamentoRepository;
+
+    @Inject
+    CartaoRepository cartaoRepository;
 
     @Inject
     ClienteRepository clienteRepository;
@@ -57,25 +64,17 @@ public class PedidoServiceImpl implements PedidoService {
     @Transactional
     public PedidoResponse create(PedidoRequest dto) {
 
-        // 2. Validar e obter dados do cliente autenticado
-        ClienteResponse clienteResponse = clienteService.getMeuPerfil();
-        
         // 1. Obter dados do usuário autenticado via Keycloak
         String idUsuarioKeycloak = jwt.getSubject();
 
         // Buscar o cliente autenticado no banco de dados
         Cliente clienteAutenticado = clienteRepository.findByIdKeycloak(idUsuarioKeycloak);
-        
+
         // Verificar se o cliente autenticado foi encontrado
         if (clienteAutenticado == null) {
             throw new ForbiddenException("Cadastro de cliente não encontrado para o usuário autenticado.");
         }
 
-        // Extrair outras informações do token JWT, se necessário
-        String emailUsuarioKeycloak = jwt.getClaim("email");
-        System.out.println("Email do usuário autenticado: " + emailUsuarioKeycloak);
-        String nomeUsuarioKeycloak = jwt.getClaim("name");
-        
         // Validar o endereço de entrega
         Endereco enderecoBanco = enderecoRepository.findByIdOptional(dto.idEnderecoEntrega())
                 .orElseThrow(() -> new NotFoundException("Endereço não encontrado com id: " + dto.idEnderecoEntrega()));
@@ -88,10 +87,9 @@ public class PedidoServiceImpl implements PedidoService {
         // 3. Mapear Pedido
         Pedido pedido = new Pedido();
         pedido.setIdUsuario(idUsuarioKeycloak);
-
+        pedido.setCliente(clienteAutenticado); // Importante: Setar o objeto Cliente também
         pedido.setNomeClienteSnapshot(clienteAutenticado.getNome());
         pedido.setData(LocalDateTime.now());
-       
 
         // 4. Mapear Endereço (Snapshot)
         EnderecoEntrega enderecoEntrega = new EnderecoEntrega();
@@ -104,46 +102,12 @@ public class PedidoServiceImpl implements PedidoService {
         enderecoEntrega.setCep(enderecoBanco.getCep());
         pedido.setEnderecoEntrega(enderecoEntrega);
 
-        // 5. Pagamento (Adicionado tratamento de erro)
-        Pagamento pagamento;
-        String tipo = dto.tipoPagamento().toUpperCase();
-
-        if (tipo.equals("PIX")) {
-            Pix pix = new Pix();
-            pix.setValor(pedido.getTotal());
-            pix.setChavePix("chave-gerada-exemplo");
-            pix.setValidade(LocalDateTime.now().plusDays(1));
-            pagamento = pix;
-
-        } else if (tipo.equals("BOLETO")) {
-            Boleto boleto = new Boleto();
-            boleto.setValor(pedido.getTotal());
-            boleto.setCodigoBarras("23793.38127 60000.000004 12345.678901 1 67890000010000");
-            boleto.setDataVencimento(LocalDateTime.now().plusDays(5));
-            pagamento = boleto;
-
-        } else if (tipo.equals("CARTAO")) {
-            Cartao cartao = new Cartao();
-            cartao.setValor(pedido.getTotal());
-            // Pega os dados que vieram no JSON
-            cartao.setNumeroCartao(dto.numeroCartao()); 
-            cartao.setNomeImpresso(dto.nomeImpresso());
-            cartao.setValidade(dto.validade());
-            cartao.setCvv(dto.cvv());
-            pagamento = cartao;
-
-        } else {
-            throw new BadRequestException("Tipo de pagamento inválido. Use: PIX, BOLETO ou CARTAO");
-        }
-
         // 6. Mapear Itens e Calcular Total
         double total = 0.0;
         List<ItemPedido> itensParaSalvar = new ArrayList<>();
 
-       
-        // Corrigido para usar itemDto dentro do loop
         for (ItemPedidoRequest itemDto : dto.itensPedido()) {
-            
+
             // Buscar a fonte pelo ID fornecido
             Fonte fonte = fonteRepository.findByIdOptional(itemDto.fonteId())
                     .orElseThrow(() -> new BadRequestException("Fonte não encontrada: " + itemDto.fonteId()));
@@ -152,7 +116,7 @@ public class PedidoServiceImpl implements PedidoService {
             if (fonte.getEstoque() < itemDto.quantidade()) {
                 throw new BadRequestException("Estoque insuficiente para a fonte: " + fonte.getNome());
             }
-            
+
             // Baixar estoque
             fonte.setEstoque(fonte.getEstoque() - itemDto.quantidade());
 
@@ -163,25 +127,108 @@ public class PedidoServiceImpl implements PedidoService {
             itemPedido.setPreco(fonte.getPreco());
             itemPedido.setPedido(pedido);
 
-            // CORREÇÃO: Usar itemDto.quantidade() (variável) e não ItemPedidoResponse.quantidade() (classe)
             total += fonte.getPreco() * itemDto.quantidade();
             itensParaSalvar.add(itemPedido);
         }
 
         // 7. Finalizar Pedido
-        pedido.setTotal(total);      
+        pedido.setTotal(total);
         pedido.setItens(itensParaSalvar);
+        
+        Pagamento pagamentoEntity = null;
+        Cartao cartaoVinculadoAoPedido = null; // Variável auxiliar para vincular no pedido
+
+        // Normaliza a string para evitar erros de maiúscula/minúscula
+        String tipoPagamento = dto.pagamento().toLowerCase(); 
+
+        switch (tipoPagamento) {
+            case "boleto":
+                Boleto boleto = new Boleto();
+                boleto.setCodigoBarras("34191.79001.01043.510047.910201.5.000000000"); 
+                boleto.setDataVencimento(LocalDateTime.now().plusDays(3));
+                pagamentoEntity = boleto;
+                break;
+
+            case "pix":
+                Pix pix = new Pix();
+                pix.setChavePix("00020126360014BR.GOV.BCB.PIX..."); 
+                pix.setValidade(LocalDateTime.now().plusMinutes(30));
+                pagamentoEntity = pix;
+                break;
+
+            case "cartao":
+                
+                Cartao cartaoParaPagamento = null;
+
+                // Opção A: Usar cartão existente pelo ID
+                if (dto.idCartao() != null) {
+                    cartaoParaPagamento = cartaoRepository.findById(dto.idCartao());
+                    if (cartaoParaPagamento == null) {
+                        throw new NotFoundException("Cartão informado não encontrado.");
+                    }
+                    // Segurança: verificar se o cartão pertence ao usuário logado
+                    if (cartaoParaPagamento.getCliente() != null && !cartaoParaPagamento.getCliente().getId().equals(clienteAutenticado.getId())) {
+                         throw new ForbiddenException("Este cartão não pertence ao usuário autenticado.");
+                    }
+                } 
+                // Opção B: Cadastrar Novo Cartão
+                else if (dto.novoCartao() != null) {
+                    Cartao novo = new Cartao();
+                    novo.setNomeImpresso(dto.novoCartao().nomeImpresso());
+                    novo.setNumeroCartao(dto.novoCartao().numeroCartao()); 
+                    novo.setValidade(dto.novoCartao().validadeCartao()); 
+                    novo.setCvv(dto.novoCartao().cvv());
+
+                    novo.setStatus("ATIVO");
+                    
+                    novo.setCliente(clienteAutenticado);
+                    
+                    cartaoRepository.persist(novo);
+                    cartaoParaPagamento = novo;
+                } 
+                else {
+                     throw new BadRequestException("Para pagamento com cartão, informe o idCartao ou os dados de um novoCartao.");
+                }
+
+                // Cria o registro de Pagamento vinculado aos dados do cartão
+                Cartao pagamentoCartao = new Cartao();
+                
+                // Vamos assumir que você quer salvar os dados históricos do pagamento:
+                pagamentoCartao.setNomeImpresso(cartaoParaPagamento.getNomeImpresso());
+                pagamentoCartao.setNumeroCartao(cartaoParaPagamento.getNumeroCartao());
+                pagamentoCartao.setValidade(cartaoParaPagamento.getValidadeCartao());
+                pagamentoCartao.setCvv(cartaoParaPagamento.getCvv());
+                
+                pagamentoEntity = pagamentoCartao;
+                cartaoVinculadoAoPedido = cartaoParaPagamento; // Guarda a referência para setar no Pedido
+                break;
+
+            default:
+                throw new BadRequestException("Tipo de pagamento inválido: " + tipoPagamento);
+        }
+
+        // Dados Comuns a todos os pagamentos
+        pagamentoEntity.setValor(total);
+        pagamentoEntity.setDataPagamento(LocalDateTime.now());
+        pagamentoEntity.setStatus("PENDENTE"); 
+
+        // Persistir e Vincular
+        pagamentoRepository.persist(pagamentoEntity);
+        pedido.setPagamento(pagamentoEntity);
+        
+        // Se houve uso de cartão, vincula a entidade Cartão ao Pedido (Chave Estrangeira)
+        if (cartaoVinculadoAoPedido != null) {
+            pedido.setCartao(cartaoVinculadoAoPedido);
+        }
 
         pedidoRepository.persist(pedido);
-        
+
         return PedidoResponse.fromEntity(pedido);
     }
 
     @Override
     @Transactional
     public List<PedidoResponse> findAll() {
-        
-        // Buscar todos os pedidos
         List<Pedido> pedidos = pedidoRepository.listAll();
         return pedidos.stream()
                 .map(PedidoResponse::fromEntity)
@@ -191,8 +238,6 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public PedidoResponse findById(Long id) {
-
-        // Buscar o pedido pelo ID e lançar exceção se não encontrado
         Pedido pedido = pedidoRepository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado com id: " + id));
         return PedidoResponse.fromEntity(pedido);
@@ -201,44 +246,36 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     @Transactional
     public PedidoResponse delete(Long id) {
-
-        // Buscar o pedido pelo ID e lançar exceção se não encontrado
         Pedido pedido = pedidoRepository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado com id: " + id));
-        
-                // Excluir o pedido e retornar a resposta
-                PedidoResponse resposta = PedidoResponse.fromEntity(pedido);
-                pedidoRepository.delete(pedido);
-                return resposta;
+
+        PedidoResponse resposta = PedidoResponse.fromEntity(pedido);
+        pedidoRepository.delete(pedido);
+        return resposta;
     }
 
     @Override
     @Transactional
     public PedidoResponse update(Long id, PedidoRequest dto) {
-
-        // Buscar o pedido pelo ID e lançar exceção se não encontrado
         Pedido pedido = pedidoRepository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado com id: " + id));
-        
-        pedido.setNomeClienteSnapshot(dto.nomeCliente());
-        // Atualizar outros campos conforme necessário
 
+        pedido.setNomeClienteSnapshot(dto.nomeCliente());
         return PedidoResponse.fromEntity(pedido);
     }
 
     @Override
     public List<PedidoResponse> MeusPedidos() {
-
-        // Obter o ID do usuário autenticado via Keycloak
         String idUsuarioKeycloak = jwt.getSubject();
-
-        // Buscar os pedidos associados ao usuário autenticado
         List<Pedido> pedidosDoUsuario = pedidoRepository.findByUsuarioId(idUsuarioKeycloak);
-
-        // Converter a lista de entidades Pedido para uma lista de DTOs PedidoResponse
         return pedidosDoUsuario.stream()
                 .map(PedidoResponse::fromEntity)
                 .toList();
     }
-        
+
+    @Override
+    @Transactional
+    public void realizarPedido(PedidoRequest pedidoRequest) {
+        throw new BadRequestException("Use o endpoint create padrão.");
+    }
 }

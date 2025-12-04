@@ -3,8 +3,10 @@ package gabriel.fontes.br.quarkus.Model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "pix") 
 public class Pix extends Pagamento{
     
 
@@ -29,5 +31,6 @@ public class Pix extends Pagamento{
     public void setValidade(LocalDateTime validade) {
         this.validade = validade;
     }
+
 
 }

@@ -1,7 +1,6 @@
 package gabriel.fontes.br.quarkus.Dto;
 
-import io.smallrye.common.constraint.NotNull;
-import jakarta.annotation.Nonnull;
+
 import jakarta.validation.constraints.NotBlank;
 
 public record EnderecoRequest( 

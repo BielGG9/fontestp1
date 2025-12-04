@@ -2,32 +2,26 @@
 
 skinparam classAttributeIconSize 0
 
-
 class PessoaFisica extends Pessoa {
-
   -cpf: String
   -rg: String
 }
 
 class PessoaJuridica extends Pessoa {
-
   -cnpj: String
   -inscricaoEstadual: String
 }
 
 abstract class Pessoa {
-
   -nome: String
   -email: String
 }
 
-class Cliente extends PessoaFisica{
-
+class Cliente extends PessoaFisica {
   -dataCadastro: LocalDateTime
 }
 
 class Endereco {
-
   -rua: String
   -bairro: String
   -complemento: String
@@ -35,56 +29,45 @@ class Endereco {
   -cidade: String
   -estado: String
   -cep: String
-
 }
 
 class Telefone {
-
   -numero: String
   -ddd: String
 }
 
 Class Departamento {
-
   -sigla: String
   -descricao: String
 }
 
 class Funcionario extends PessoaFisica {
-
   -cargo: String
   -dataAdmissao: LocalDate
 }
 
 class Fornecedor extends PessoaJuridica {
-
   -razaoSocial: String
 }
 
-class UsuarioKeyCloack {
-
+class Usuario {
   -nome: String
   -senha: String
 }
 
 Enum Perfil {
-
-  + ADM: int
-  + USER: int
-
+  ADM
+  USER
 }
 
 class Pedido {
-
   -nomeCliente: String
   -total: Double
   -dataPedido: LocalDateTime
   -quantidade: Integer
-
 }
 
 Class EnderecoEntrega {
-
   -rua: String
   -numero: String
   -complemento: String
@@ -92,17 +75,14 @@ Class EnderecoEntrega {
   -cidade: String
   -estado: String
   -cep: String
-
 }
 
 class Pagamento {
-  
-  -LocalDateTime
-
+  -valor: Double
+  -dataPagamento: LocalDateTime
 }
 
 class Pix extends Pagamento {
-
   -chavePix: String
   -validade: LocalDateTime
 }
@@ -110,22 +90,19 @@ class Pix extends Pagamento {
 class Boleto extends Pagamento {
   -codigoBarras: String
   -dataVencimento: LocalDateTime
-
 }
 
-class Cartao extends Pagamento{
-
+class Cartao extends Pagamento {
   -numeroCartao: String
   -nomeImpresso: String
   -validade: LocalDate
   -cvv: String
-
+  -status: String
 }
 
 class ItemPedido {
   -quantidade: Integer
   -preco: double
-
 }
 
 class Fonte {
@@ -136,39 +113,30 @@ class Fonte {
 }
 
 class Marca {
-
   -nome: String
 }
 
 enum Certificacao {
-
-  + BRONZE: int
-  + SILVER: int
-  + GOLD: int 
+  BRONZE
+  SILVER
+  GOLD
 }
 
 class Modelo {
-
   -numeracao: int
-  
-  }
+}
 
 Class SituacaoPedido {
-
-  + PENDENTE: int
-  + APROVADO: int
-  + CANCELADO: int
-
+  +PENDENTE: int
+  +APROVADO: int
+  +CANCELADO: int
 }
 
 class StatusPedido {
-
   -dataAtualizacao: LocalDateTime
-
 }
 
-
-
+' --- RELACIONAMENTOS ---
 
 Pessoa "1" *--> "*" Endereco
 Pessoa "1" *--> "*" Telefone
@@ -183,9 +151,11 @@ Pedido "1" --> "1" EnderecoEntrega
 
 StatusPedido "*" --> "1" SituacaoPedido
 
-Cliente "1" --> "1" UsuarioKeyCloack
+Cliente "1" --> "1" Usuario
 
-UsuarioKeyCloack "*" --> "1" Perfil
+Cliente "1" --> "*" Cartao
+
+Usuario "*" --> "1" Perfil
 
 ItemPedido "*" --> "1" Fonte
 
@@ -194,6 +164,5 @@ Fonte "*" --> "*" Fornecedor
 Fonte "*" --> "1" Certificacao
 
 Modelo "*" --> "1" Marca
-
 
 @enduml

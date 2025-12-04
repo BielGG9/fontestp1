@@ -12,15 +12,21 @@ public record PedidoResponse(
     LocalDateTime data,
     EnderecoEntregaResponse enderecoEntrega,
     List<ItemPedidoResponse> itensPedido,
-    PagamentoResponse pagamento
-
+    Object pagamento  
 ) {
 
     public static PedidoResponse fromEntity(Pedido pedido) {
+
         EnderecoEntregaResponse enderecoRes = null;
         if (pedido.getEnderecoEntrega() != null) {
             enderecoRes = EnderecoEntregaResponse.fromEntity(pedido.getEnderecoEntrega());
         }
+
+        Object pagamentoRes = null;
+        if (pedido.getPagamento() != null) {
+            pagamentoRes = PagamentoResponse.fromEntity(pedido.getPagamento());
+        }
+
         return new PedidoResponse(
             pedido.getId(),
             pedido.getNomeClienteSnapshot(),
@@ -28,8 +34,7 @@ public record PedidoResponse(
             pedido.getData(),
             enderecoRes,
             pedido.getItens().stream().map(ItemPedidoResponse::fromEntity).toList(),
-            PagamentoResponse.pix(null, null)
+            pagamentoRes
         );
     }
-    
 }

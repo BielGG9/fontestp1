@@ -45,12 +45,6 @@ public class ClienteServiceImpl implements ClienteService {
     public ClienteResponse getMeuPerfil() {
         String idUsuarioKeycloak = jwt.getSubject();
 
-        // Regra: usuário já cadastrado não pode tentar se cadastrar novamente
-        if (!idUsuarioKeycloak.equals("ID_TEMPO_DE_TESTE") &&
-            repository.findByIdKeycloak(idUsuarioKeycloak) != null) {
-            throw new ForbiddenException("Usuário já cadastrado como cliente.");
-        }
-
         // Busca cliente atrelado ao ID do Keycloak
         Cliente cliente = repository.findByIdKeycloak(idUsuarioKeycloak);
 

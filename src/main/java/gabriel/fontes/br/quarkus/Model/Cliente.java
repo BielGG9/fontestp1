@@ -2,9 +2,11 @@ package gabriel.fontes.br.quarkus.Model;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 
 @Entity
+@Table(name = "cliente") 
 public class Cliente extends PessoaFisica {
 
     private LocalDateTime dataCadastro = LocalDateTime.now();

@@ -1,15 +1,35 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "cartao") 
 public class Cartao extends Pagamento{
     
     private String numeroCartao;
     private String nomeImpresso;
-    private String validade;
+    private String validadeCartao;
     private String cvv;
+    private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "id_cliente")
+    private Cliente cliente;
 
     public Cartao() {
     }
     
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getNumeroCartao() {
         return numeroCartao;
     }
@@ -26,12 +46,12 @@ public class Cartao extends Pagamento{
         this.nomeImpresso = nomeImpresso;
     }
 
-    public String getValidade() {
-        return validade;
+    public String getValidadeCartao() {
+        return validadeCartao;
     }
 
-    public void setValidade(String validade) {
-        this.validade = validade;
+    public void setValidade(String validadeCartao) {
+        this.validadeCartao = validadeCartao;
     }
 
     public String getCvv() {
@@ -40,6 +60,14 @@ public class Cartao extends Pagamento{
 
     public void setCvv(String cvv) {
         this.cvv = cvv;
+    }
+
+    public Cliente getCliente() { 
+        return cliente; 
+    }
+
+    public void setCliente(Cliente cliente) { 
+        this.cliente = cliente; 
     }
 
 }

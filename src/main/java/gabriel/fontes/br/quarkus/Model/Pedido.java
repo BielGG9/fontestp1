@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -17,6 +18,10 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "pedido")
 public class Pedido extends DefaultEntity{
+
+    public static final String STATUS_PENDENTE = "PENDENTE";
+    public static final String STATUS_PAGO = "PAGO";
+    public static final String STATUS_CANCELADO = "CANCELADO";
 
     @Column(nullable = false)
     private LocalDateTime data;
@@ -36,17 +41,42 @@ public class Pedido extends DefaultEntity{
     @Embedded
     private EnderecoEntrega enderecoEntrega;
 
+    @ManyToOne 
+    @JoinColumn(name = "id_cliente")
+    private Cliente cliente;
+
     // Relação Um-para-Um com Pagamento com cascade all
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pagamento_id", referencedColumnName = "id")
     private Pagamento pagamento;
 
+    @ManyToOne
+    @JoinColumn(name = "id_cartao") // Cria a chave estrangeira no banco
+    private Cartao cartao;
+
+     
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
     public Pagamento getPagamento() {
         return pagamento;
     }
 
-    public void setPagamento(Pagamento pagamento) {
+     public void setPagamento(Pagamento pagamento) {
         this.pagamento = pagamento;
+    }
+
+    public Cartao getCartao() {
+        return cartao;
+    }
+
+    public void setCartao(Cartao cartao) {
+        this.cartao = cartao;
     }
 
     public LocalDateTime getData() {
