@@ -1,6 +1,5 @@
 package gabriel.fontes.br.quarkus.Dto;
 
-import java.time.LocalDateTime;
 import gabriel.fontes.br.quarkus.Model.Cliente;
 
 public record ClienteResponse(
@@ -8,8 +7,7 @@ public record ClienteResponse(
     String nome,
     String email,
     String cpf,
-    String rg,
-    LocalDateTime dataCadastro
+    String rg
 ) {
 
     public static ClienteResponse fromEntity(Cliente cliente) {
@@ -18,8 +16,7 @@ public record ClienteResponse(
             cliente.getNome(),
             cliente.getEmail(),
             cliente.getCpf(),
-            cliente.getRg(),
-            cliente.getDataCadastro()
+            cliente.getRg()
         );
     }
 }

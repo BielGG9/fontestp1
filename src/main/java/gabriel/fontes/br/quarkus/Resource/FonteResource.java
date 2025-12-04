@@ -10,6 +10,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/fontes")
 @Produces(MediaType.APPLICATION_JSON)
@@ -19,20 +20,22 @@ public class FonteResource {
     @Inject
     FonteService service;
 
+    private static final Logger logger = Logger.getLogger(ClienteResource.class.getName());
+
     @POST
     @Transactional
     @RolesAllowed("ADM")
     public Response cadastrarFonte(FonteRequest fonteRequest) {
-       
         FonteResponse fonteCriada = service.create(fonteRequest);
+        logger.info("Fonte criada: " + fonteCriada.id());
         return Response.status(Response.Status.CREATED).entity(fonteCriada).build();
     }
 
     @GET
     @RolesAllowed({"USER", "ADM"})
     public Response FindAll() {
-
         List<FonteResponse> lista = service.findAll();
+        logger.info("Buscando todas as fontes");
         return Response.ok(lista).build();
     }
     
@@ -40,8 +43,8 @@ public class FonteResource {
     @Path("/{id}")
     @RolesAllowed({"USER", "ADM"})
     public Response findById(@PathParam("id") Long id) {
-
         FonteResponse fonte = service.findById(id);
+        logger.info("Buscando fonte pelo ID: " + id);
         return Response.ok(fonte).build();
     }
 
@@ -50,8 +53,8 @@ public class FonteResource {
     @Transactional
     @RolesAllowed("ADM")
     public Response delete(@PathParam("id") Long id) {
-
         FonteResponse fonteDeletada = service.delete(id);
+        logger.info("Fonte deletada: " + fonteDeletada.id());
         return Response.ok(fonteDeletada).build();
     }
 
@@ -60,8 +63,8 @@ public class FonteResource {
     @Transactional
     @RolesAllowed("ADM")
     public Response update(@PathParam("id") Long id, FonteRequest fonteRequest) {
-
         FonteResponse fonteAtualizada = service.update(id, fonteRequest);
+        logger.info("Fonte atualizada: " + fonteAtualizada.id());
         return Response.ok(fonteAtualizada).build();
     }
 }

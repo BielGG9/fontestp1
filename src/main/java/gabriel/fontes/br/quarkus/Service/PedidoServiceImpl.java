@@ -10,12 +10,16 @@ import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
 import gabriel.fontes.br.quarkus.Dto.ItemPedidoRequest;
 import gabriel.fontes.br.quarkus.Dto.PedidoRequest;
 import gabriel.fontes.br.quarkus.Dto.PedidoResponse;
+import gabriel.fontes.br.quarkus.Model.Boleto;
+import gabriel.fontes.br.quarkus.Model.Cartao;
 import gabriel.fontes.br.quarkus.Model.Cliente;
 import gabriel.fontes.br.quarkus.Model.Endereco;
 import gabriel.fontes.br.quarkus.Model.EnderecoEntrega;
 import gabriel.fontes.br.quarkus.Model.Fonte;
 import gabriel.fontes.br.quarkus.Model.ItemPedido;
+import gabriel.fontes.br.quarkus.Model.Pagamento;
 import gabriel.fontes.br.quarkus.Model.Pedido;
+import gabriel.fontes.br.quarkus.Model.Pix;
 import gabriel.fontes.br.quarkus.Model.Enums.TipoPagamento;
 import gabriel.fontes.br.quarkus.Repository.ClienteRepository;
 import gabriel.fontes.br.quarkus.Repository.EnderecoRepository;
@@ -101,10 +105,35 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setEnderecoEntrega(enderecoEntrega);
 
         // 5. Pagamento (Adicionado tratamento de erro)
-        try {
-            pedido.setTipoPagamento(TipoPagamento.valueOf(dto.tipoPagamento().toUpperCase()));
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Tipo de pagamento inválido: " + dto.tipoPagamento());
+        Pagamento pagamento;
+        String tipo = dto.tipoPagamento().toUpperCase();
+
+        if (tipo.equals("PIX")) {
+            Pix pix = new Pix();
+            pix.setValor(pedido.getTotal());
+            pix.setChavePix("chave-gerada-exemplo");
+            pix.setValidade(LocalDateTime.now().plusDays(1));
+            pagamento = pix;
+
+        } else if (tipo.equals("BOLETO")) {
+            Boleto boleto = new Boleto();
+            boleto.setValor(pedido.getTotal());
+            boleto.setCodigoBarras("23793.38127 60000.000004 12345.678901 1 67890000010000");
+            boleto.setDataVencimento(LocalDateTime.now().plusDays(5));
+            pagamento = boleto;
+
+        } else if (tipo.equals("CARTAO")) {
+            Cartao cartao = new Cartao();
+            cartao.setValor(pedido.getTotal());
+            // Pega os dados que vieram no JSON
+            cartao.setNumeroCartao(dto.numeroCartao()); 
+            cartao.setNomeImpresso(dto.nomeImpresso());
+            cartao.setValidade(dto.validade());
+            cartao.setCvv(dto.cvv());
+            pagamento = cartao;
+
+        } else {
+            throw new BadRequestException("Tipo de pagamento inválido. Use: PIX, BOLETO ou CARTAO");
         }
 
         // 6. Mapear Itens e Calcular Total
@@ -192,7 +221,6 @@ public class PedidoServiceImpl implements PedidoService {
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado com id: " + id));
         
         pedido.setNomeClienteSnapshot(dto.nomeCliente());
-        pedido.setTotal(dto.total());
         // Atualizar outros campos conforme necessário
 
         return PedidoResponse.fromEntity(pedido);

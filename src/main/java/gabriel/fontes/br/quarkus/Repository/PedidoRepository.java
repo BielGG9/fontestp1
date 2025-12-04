@@ -43,4 +43,6 @@ public class PedidoRepository implements PanacheRepository<Pedido> {
 
         return find(query.toString(), params).list();
     }
+
+    
 }

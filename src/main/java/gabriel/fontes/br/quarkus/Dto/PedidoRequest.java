@@ -1,6 +1,5 @@
 package gabriel.fontes.br.quarkus.Dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -19,12 +18,13 @@ public record PedidoRequest(
     List<ItemPedidoRequest> itensPedido,
 
     @NotBlank(message = "O tipo de pagamento é obrigatório")
-    String tipoPagamento
-    
-    
-) {
+    String tipoPagamento,
 
+    String numeroCartao,
+    String nomeImpresso,
+    String validade,
+    String cvv
     
-
     
+) {    
 }

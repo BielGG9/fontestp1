@@ -1,6 +1,6 @@
 package gabriel.fontes.br.quarkus.Dto;
 
-import java.time.LocalDateTime;
+
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -15,8 +15,7 @@ public record ClienteRequest(
     String cpf,
 
     @NotBlank(message = "O RG não pode ser vazio")
-    String rg,
-
-    LocalDateTime dataCadastro
+    String rg
     
-) {}
+) {
+}

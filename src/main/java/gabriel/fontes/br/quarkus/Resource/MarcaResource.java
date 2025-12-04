@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/marca")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,9 +22,12 @@ public class MarcaResource {
     @Inject
     MarcaService service;
 
+    private static final Logger logger = Logger.getLogger(ClienteResource.class.getName());
+
     @GET
     @RolesAllowed({"USER", "ADM"})
     public List<MarcaResponse> findAll() {
+        logger.info("Buscando todas as marcas");
         return service.findAll();
     }
 
@@ -31,6 +35,7 @@ public class MarcaResource {
     @Path("/{id}")
     @RolesAllowed({"USER", "ADM"})
     public MarcaResponse findById(@PathParam("id") Long id) {
+        logger.info("Buscando marca pelo ID: " + id);
         return service.findById(id);
     }
 
@@ -39,6 +44,7 @@ public class MarcaResource {
     @RolesAllowed("ADM")
     public Response create(MarcaRequest request) {
         MarcaResponse response = service.create(request);
+        logger.info("Marca criada: " + response.id());
         return Response.created(URI.create("/marcas/" + response.id())).entity(response).build();
     }
 
@@ -47,6 +53,7 @@ public class MarcaResource {
     @Transactional
     @RolesAllowed("ADM")
     public MarcaResponse update(@PathParam("id") Long id, MarcaRequest request) {
+        logger.info("Atualizando marca com ID: " + id);
         return service.update(id, request);
     }
 
@@ -56,6 +63,7 @@ public class MarcaResource {
     @RolesAllowed("ADM")
     public Response delete(@PathParam("id") Long id) {
         MarcaResponse marcaDeletada = service.delete(id);
+        logger.info("Marca deletada: " + marcaDeletada.id());
         return Response.ok(marcaDeletada).build();
     }
 }

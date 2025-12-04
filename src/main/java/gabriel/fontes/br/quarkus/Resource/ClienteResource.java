@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
 import java.util.List;
+import java.util.logging.Logger;
 
 import gabriel.fontes.br.quarkus.Dto.ClienteRequest;
 import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
@@ -23,9 +24,12 @@ public class ClienteResource {
     @Inject
     ClienteService service;
 
+    private static final Logger logger = Logger.getLogger(ClienteResource.class.getName());
+
     @GET
     @RolesAllowed({"USER", "ADM"})
-    public List<ClienteResponse> findAll() {
+    public List<ClienteResponse> findAll() {    
+        logger.info("Buscando todos os clientes");
         return service.findAll();
 
     }
@@ -35,6 +39,7 @@ public class ClienteResource {
     @RolesAllowed({"USER", "ADM"})
     public Response getMeuPerfil() {
         ClienteResponse meuPerfil = service.getMeuPerfil();
+        logger.info("Buscando perfil do cliente logado");
         return Response.ok(meuPerfil).build();
 
     }
@@ -43,6 +48,7 @@ public class ClienteResource {
     @Path("/{id}")
     @RolesAllowed({"USER", "ADM"})
     public ClienteResponse findById(@PathParam("id") Long id) {
+        logger.info("Buscando cliente pelo ID: " + id);
         return service.findById(id);
 
     }
@@ -52,6 +58,7 @@ public class ClienteResource {
     @RolesAllowed("ADM")
     public Response create(ClienteRequest request) {
         ClienteResponse response = service.create(request);
+        logger.info("Cliente criado: " + response.id());
         return Response.created(URI.create("/clientes/" + response.id())).entity(response).build();
 
     }
@@ -61,17 +68,18 @@ public class ClienteResource {
     @Transactional
     @RolesAllowed("ADM")
     public ClienteResponse update(@PathParam("id")Long id, ClienteRequest request) {
+        logger.info("Atualizando cliente com ID: " + id);
         return service.update(id, request);
 
     }
 
-    @DELETE
-    @Path("/{id}")
-    @Transactional
-    @RolesAllowed("ADM")
-    public Response delete(@PathParam("id") Long id) {
-        ClienteResponse clienteDeletada = service.delete(id);
-        return Response.ok(clienteDeletada).build();
-
-    }
+   @DELETE
+@Path("/{id}")
+@Transactional
+@RolesAllowed("ADM")
+public Response delete(@PathParam("id") Long id) {
+    ClienteResponse clienteDeletado = service.delete(id);
+    logger.info("Cliente deletado: " + clienteDeletado.id());
+    return Response.noContent().build(); 
+}
 }

@@ -5,12 +5,13 @@ import java.util.Collection;
 import java.util.List;
 
 import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
-import gabriel.fontes.br.quarkus.Model.Enums.TipoPagamento;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -28,15 +29,25 @@ public class Pedido extends DefaultEntity{
     private String idUsuario;
     private String nomeClienteSnapshot;
 
-    @Column(nullable = false)
-    private TipoPagamento tipoPagamento;
-
     // Relação Um-para-Muitos com ItemPedido com cascade persist
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.PERSIST)
     private List<ItemPedido> itensPedido;
 
     @Embedded
     private EnderecoEntrega enderecoEntrega;
+
+    // Relação Um-para-Um com Pagamento com cascade all
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pagamento_id", referencedColumnName = "id")
+    private Pagamento pagamento;
+
+    public Pagamento getPagamento() {
+        return pagamento;
+    }
+
+    public void setPagamento(Pagamento pagamento) {
+        this.pagamento = pagamento;
+    }
 
     public LocalDateTime getData() {
         return data;
@@ -78,10 +89,5 @@ public class Pedido extends DefaultEntity{
     public void setItens(List<ItemPedido> itensPedido) {
         this.itensPedido = itensPedido;
     }
-    public TipoPagamento getTipoPagamento() {
-        return tipoPagamento;
-    }
-    public void setTipoPagamento(TipoPagamento tipoPagamento) {
-        this.tipoPagamento = tipoPagamento;
-    }   
+  
 }

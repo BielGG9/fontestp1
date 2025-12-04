@@ -11,7 +11,8 @@ public record PedidoResponse(
     Double total,
     LocalDateTime data,
     EnderecoEntregaResponse enderecoEntrega,
-    List<ItemPedidoResponse> itensPedido
+    List<ItemPedidoResponse> itensPedido,
+    PagamentoResponse pagamento
 
 ) {
 
@@ -26,7 +27,8 @@ public record PedidoResponse(
             pedido.getTotal(),
             pedido.getData(),
             enderecoRes,
-            pedido.getItens().stream().map(ItemPedidoResponse::fromEntity).toList()
+            pedido.getItens().stream().map(ItemPedidoResponse::fromEntity).toList(),
+            PagamentoResponse.pix(null, null)
         );
     }
     

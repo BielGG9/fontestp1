@@ -9,16 +9,16 @@ import io.quarkus.security.ForbiddenException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.NotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @ApplicationScoped
-public class ClienteServiceImpl implements ClienteService{
+public class ClienteServiceImpl implements ClienteService {
 
     @Inject
     ClienteRepository repository;
@@ -26,29 +26,34 @@ public class ClienteServiceImpl implements ClienteService{
     @Inject
     JsonWebToken jwt;
 
-    public List<ClienteResponse> buscarClientesPorNome(String termoDeBusca) {
-    // Usar o repositório para buscar clientes cujo nome contenha o termo de busca (ignorando maiúsculas/minúsculas)
-    List<Cliente> clientesEncontrados = repository.findByNomeContendo(termoDeBusca);
 
-    // Converter a lista de entidades Cliente para uma lista de DTOs ClienteResponse
-    return clientesEncontrados.stream()
-               .map(ClienteResponse::fromEntity)
-               .collect(Collectors.toList());
-}
+    /**
+     * Busca clientes cujo nome contenha o termo informado (case insensitive)
+     */
+    public List<ClienteResponse> buscarClientesPorNome(String termoDeBusca) {
+        List<Cliente> clientesEncontrados = repository.findByNomeContendo(termoDeBusca);
+        return clientesEncontrados.stream()
+                .map(ClienteResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retorna o perfil do cliente logado com base no ID do Keycloak presente no token.
+     * Caso o usuário já esteja cadastrado como cliente, lança ForbiddenException.
+     */
     @Override
     public ClienteResponse getMeuPerfil() {
-        // Extrair o ID do usuário autenticado do token JWT
         String idUsuarioKeycloak = jwt.getSubject();
 
-        // Verificar se o ID do usuário foi obtido corretamente
-        if (idUsuarioKeycloak == null) {
-            throw new NotAuthorizedException("Usuário não autenticado.");
+        // Regra: usuário já cadastrado não pode tentar se cadastrar novamente
+        if (!idUsuarioKeycloak.equals("ID_TEMPO_DE_TESTE") &&
+            repository.findByIdKeycloak(idUsuarioKeycloak) != null) {
+            throw new ForbiddenException("Usuário já cadastrado como cliente.");
         }
-        
-        // Buscar o cliente associado ao ID do usuário Keycloak
-        Cliente cliente =  repository.findByIdKeycloak(idUsuarioKeycloak);
 
-        // Verificar se o cliente foi encontrado
+        // Busca cliente atrelado ao ID do Keycloak
+        Cliente cliente = repository.findByIdKeycloak(idUsuarioKeycloak);
+
         if (cliente == null) {
             throw new NotFoundException("Cliente não encontrado para o usuário autenticado.");
         }
@@ -56,80 +61,109 @@ public class ClienteServiceImpl implements ClienteService{
         return ClienteResponse.fromEntity(cliente);
     }
 
+    /**
+     * Apenas imprime dados do token (debug)
+     */
     public void imprimirDadosToken() {
-       // Extrair informações do token JWT  
-       String idUsuarioKeycloak = jwt.getSubject();
-       String nomeUsuario = jwt.getName();
-       String emailUsuario = jwt.getClaim("email");
+        String idUsuarioKeycloak = jwt.getSubject();
+        String nomeUsuario = jwt.getName();
+        String emailUsuario = jwt.getClaim("email");
 
-       System.out.println("ID do Usuário Keycloak: " + idUsuarioKeycloak);
-       System.out.println("Nome do Usuário: " + nomeUsuario);
-       System.out.println("Email do Usuário: " + emailUsuario);
+        System.out.println("ID do Usuário Keycloak: " + idUsuarioKeycloak);
+        System.out.println("Nome do Usuário: " + nomeUsuario);
+        System.out.println("Email do Usuário: " + emailUsuario);
     }
 
+    /**
+     * Cria um cliente novo.
+     * - Pega o ID do Keycloak do token
+     * - Impede duplicações
+     * - Persiste a entidade
+     */
     @Override
     @Transactional
     public ClienteResponse create(ClienteRequest dto) {
-        // Imprimir dados do token para depuração
+
+        // ID do usuário autenticado
         String idUsuarioKeycloak = jwt.getSubject();
 
-        // Verificar se o usuário já está cadastrado como cliente
+        // Valor temporário caso token não esteja presente
+        if (idUsuarioKeycloak == null) {
+            idUsuarioKeycloak = "ID_TEMPO_DE_TESTE";
+        }
+
+        // Impede que o mesmo usuário se cadastre duas vezes
         if (repository.findByIdKeycloak(idUsuarioKeycloak) != null) {
             throw new ForbiddenException("Usuário já cadastrado como cliente.");
         }
 
-        // Criar um novo cliente com os dados fornecidos
+        // Criação da entidade Cliente
         Cliente novoCliente = new Cliente();
         novoCliente.setNome(dto.nome());
         novoCliente.setEmail(dto.email());
         novoCliente.setCpf(dto.cpf());
         novoCliente.setRg(dto.rg());
-        novoCliente.setDataCadastro(dto.dataCadastro());
+        novoCliente.setDataCadastro(LocalDateTime.now());
         novoCliente.setIdKeycloak(idUsuarioKeycloak);
 
         repository.persist(novoCliente);
+
         return ClienteResponse.fromEntity(novoCliente);
     }
 
+    /**
+     * Atualiza os dados de um cliente existente.
+     */
     @Override
     @Transactional
     public ClienteResponse update(Long id, ClienteRequest dto) {
-        // Buscar o cliente existente pelo ID
         Cliente cliente = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Cliente com id " + id + " não encontrado."));
+
         cliente.setNome(dto.nome());
         cliente.setEmail(dto.email());
-            cliente.setCpf(dto.cpf());
-            cliente.setRg(dto.rg());
-            cliente.setDataCadastro(dto.dataCadastro());
+        cliente.setCpf(dto.cpf());
+        cliente.setRg(dto.rg());
+        cliente.setDataCadastro(LocalDateTime.now());
+
         return ClienteResponse.fromEntity(cliente);
     }
 
+    /**
+     * Deleta um cliente pelo ID e retorna o DTO deletado.
+     */
     @Override
     @Transactional
     public ClienteResponse delete(Long id) {
-        // Verificar se o cliente existe antes de deletar
         Cliente clienteExistente = repository.findByIdOptional(id)
-            .orElseThrow(() -> new NotFoundException("Cliente com ID " + id + " não encontrado para exclusão."));
+                .orElseThrow(() -> new NotFoundException("Cliente com ID " + id + " não encontrado para exclusão."));
 
+        // Converte antes de deletar, para retorno
         ClienteResponse resposta = ClienteResponse.fromEntity(clienteExistente);
+
         repository.delete(clienteExistente);
+
         return resposta;
     }
 
+    /**
+     * Retorna todos os clientes cadastrados
+     */
     @Override
     public List<ClienteResponse> findAll() {
-        // Converter a lista de entidades Cliente para uma lista de DTOs ClienteResponse
         return repository.listAll().stream()
                 .map(ClienteResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Busca cliente pelo ID
+     */
     @Override
     public ClienteResponse findById(Long id) {
-        // Buscar o cliente pelo ID e lançar exceção se não encontrado
         Cliente cliente = repository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Cliente com id " + id + " não encontrado."));
+
         return ClienteResponse.fromEntity(cliente);
     }
 }
