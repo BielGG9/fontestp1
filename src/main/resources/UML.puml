@@ -126,14 +126,14 @@ class Modelo {
   -numeracao: int
 }
 
-Class SituacaoPedido {
-  +PENDENTE: int
-  +APROVADO: int
-  +CANCELADO: int
-}
 
-class StatusPedido {
-  -dataAtualizacao: LocalDateTime
+Enum StatusPedido {
+  + PENDENTE
+  + PAGO 
+  + ENVIADO 
+  + ENTREGUE 
+  + CANCELADO
+
 }
 
 ' --- RELACIONAMENTOS ---
@@ -148,8 +148,6 @@ Pedido "1" --> "*" ItemPedido
 Pedido "*" --> "1" Pagamento
 Pedido "1" --> "*" StatusPedido
 Pedido "1" --> "1" EnderecoEntrega
-
-StatusPedido "*" --> "1" SituacaoPedido
 
 Cliente "1" --> "1" Usuario
 
