@@ -1,5 +1,6 @@
 package gabriel.fontes.br.quarkus.Model;
 
+import gabriel.fontes.br.quarkus.Model.Abstratc.Pagamento;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -13,21 +14,12 @@ public class Cartao extends Pagamento{
     private String nomeImpresso;
     private String validadeCartao;
     private String cvv;
-    private String status;
 
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
     public Cartao() {
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getNumeroCartao() {

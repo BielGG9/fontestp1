@@ -7,8 +7,7 @@ public record CartaoResponse(
        String numeroCartao,
        String nomeImpresso,
        String validade,
-       String cvv,
-       String status
+       String cvv
 ) {
 
     public static CartaoResponse fromEntity(Cartao cartao) {
@@ -21,8 +20,7 @@ public record CartaoResponse(
                 cartao.getNumeroCartao().substring(cartao.getNumeroCartao().length() - 4),
                 cartao.getNomeImpresso(),
                 cartao.getValidadeCartao(),
-                cartao.getCvv(),
-                cartao.getStatus()
+                cartao.getCvv()
         );
     }
 }

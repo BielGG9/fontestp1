@@ -12,7 +12,8 @@ public record PedidoResponse(
     LocalDateTime data,
     EnderecoEntregaResponse enderecoEntrega,
     List<ItemPedidoResponse> itensPedido,
-    Object pagamento  
+    Object pagamento,
+    String status
 ) {
 
     public static PedidoResponse fromEntity(Pedido pedido) {
@@ -34,7 +35,8 @@ public record PedidoResponse(
             pedido.getData(),
             enderecoRes,
             pedido.getItens().stream().map(ItemPedidoResponse::fromEntity).toList(),
-            pagamentoRes
+            pagamentoRes,
+            pedido.getStatus().getStts()
         );
     }
 }

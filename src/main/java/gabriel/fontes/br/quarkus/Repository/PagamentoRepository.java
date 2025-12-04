@@ -2,7 +2,7 @@ package gabriel.fontes.br.quarkus.Repository;
 
 import java.util.List;
 
-import gabriel.fontes.br.quarkus.Model.Pagamento;
+import gabriel.fontes.br.quarkus.Model.Abstratc.Pagamento;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 

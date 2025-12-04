@@ -2,8 +2,8 @@ package gabriel.fontes.br.quarkus.Dto;
 
 import gabriel.fontes.br.quarkus.Model.Boleto;
 import gabriel.fontes.br.quarkus.Model.Cartao;
-import gabriel.fontes.br.quarkus.Model.Pagamento;
 import gabriel.fontes.br.quarkus.Model.Pix;
+import gabriel.fontes.br.quarkus.Model.Abstratc.Pagamento;
 
 public record PagamentoResponse(Object pagamento) {
 

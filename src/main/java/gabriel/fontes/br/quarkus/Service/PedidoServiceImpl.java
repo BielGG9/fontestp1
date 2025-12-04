@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import gabriel.fontes.br.quarkus.Dto.ClienteResponse;
 import gabriel.fontes.br.quarkus.Dto.PedidoRequest;
 import gabriel.fontes.br.quarkus.Dto.PedidoResponse;
 import gabriel.fontes.br.quarkus.Dto.ItemPedidoRequest; 
@@ -17,9 +16,9 @@ import gabriel.fontes.br.quarkus.Model.Endereco;
 import gabriel.fontes.br.quarkus.Model.EnderecoEntrega;
 import gabriel.fontes.br.quarkus.Model.Fonte;
 import gabriel.fontes.br.quarkus.Model.ItemPedido;
-import gabriel.fontes.br.quarkus.Model.Pagamento;
 import gabriel.fontes.br.quarkus.Model.Pedido;
 import gabriel.fontes.br.quarkus.Model.Pix;
+import gabriel.fontes.br.quarkus.Model.Abstratc.Pagamento;
 import gabriel.fontes.br.quarkus.Repository.CartaoRepository;
 import gabriel.fontes.br.quarkus.Repository.ClienteRepository;
 import gabriel.fontes.br.quarkus.Repository.EnderecoRepository;
@@ -32,6 +31,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
+import gabriel.fontes.br.quarkus.Model.Enums.StatusPedido;
 
 @ApplicationScoped
 public class PedidoServiceImpl implements PedidoService {
@@ -86,6 +86,7 @@ public class PedidoServiceImpl implements PedidoService {
 
         // 3. Mapear Pedido
         Pedido pedido = new Pedido();
+        pedido.setStatus(StatusPedido.PENDENTE);
         pedido.setIdUsuario(idUsuarioKeycloak);
         pedido.setCliente(clienteAutenticado); // Importante: Setar o objeto Cliente também
         pedido.setNomeClienteSnapshot(clienteAutenticado.getNome());
@@ -178,8 +179,6 @@ public class PedidoServiceImpl implements PedidoService {
                     novo.setNumeroCartao(dto.novoCartao().numeroCartao()); 
                     novo.setValidade(dto.novoCartao().validadeCartao()); 
                     novo.setCvv(dto.novoCartao().cvv());
-
-                    novo.setStatus("ATIVO");
                     
                     novo.setCliente(clienteAutenticado);
                     
@@ -210,7 +209,6 @@ public class PedidoServiceImpl implements PedidoService {
         // Dados Comuns a todos os pagamentos
         pagamentoEntity.setValor(total);
         pagamentoEntity.setDataPagamento(LocalDateTime.now());
-        pagamentoEntity.setStatus("PENDENTE"); 
 
         // Persistir e Vincular
         pagamentoRepository.persist(pagamentoEntity);

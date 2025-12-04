@@ -4,7 +4,6 @@ import java.util.List;
 
 import gabriel.fontes.br.quarkus.Dto.CartaoRequest;
 import gabriel.fontes.br.quarkus.Dto.CartaoResponse;
-import gabriel.fontes.br.quarkus.Model.Cartao;
 
 
 public interface CartaoService {

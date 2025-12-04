@@ -5,16 +5,14 @@ import gabriel.fontes.br.quarkus.Model.Boleto;
 public record BoletoResponse(
         Long id,
         String codigoBarras,
-        Double valor,
-        String status
+        Double valor
 ) {
     
     public static BoletoResponse fromEntity(Boleto boleto) {
         return new BoletoResponse(
                 boleto.getId(),
                 boleto.getCodigoBarras(),
-                boleto.getValor(),
-                boleto.getStatus()
+                boleto.getValor()
         );
     }
 }

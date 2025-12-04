@@ -1,9 +1,8 @@
-package gabriel.fontes.br.quarkus.Model;
+package gabriel.fontes.br.quarkus.Model.Abstratc;
 
 
 import java.time.LocalDateTime;
 
-import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;

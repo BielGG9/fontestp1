@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import gabriel.fontes.br.quarkus.Model.Abstratc.DefaultEntity;
+import gabriel.fontes.br.quarkus.Model.Abstratc.Pagamento;
+import gabriel.fontes.br.quarkus.Model.Enums.StatusPedido;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -19,10 +21,7 @@ import jakarta.persistence.Table;
 @Table(name = "pedido")
 public class Pedido extends DefaultEntity{
 
-    public static final String STATUS_PENDENTE = "PENDENTE";
-    public static final String STATUS_PAGO = "PAGO";
-    public static final String STATUS_CANCELADO = "CANCELADO";
-
+ 
     @Column(nullable = false)
     private LocalDateTime data;
 
@@ -54,7 +53,18 @@ public class Pedido extends DefaultEntity{
     @JoinColumn(name = "id_cartao") // Cria a chave estrangeira no banco
     private Cartao cartao;
 
+    @Column(name = "status_id") 
+    private StatusPedido status;
+
      
+    public StatusPedido getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusPedido status) {
+        this.status = status;
+    }
+
     public Cliente getCliente() {
         return cliente;
     }
