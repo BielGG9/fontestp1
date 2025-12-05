@@ -2,12 +2,12 @@
 
 skinparam classAttributeIconSize 0
 
-class PessoaFisica extends Pessoa {
+abstract PessoaFisica extends Pessoa {
   -cpf: String
   -rg: String
 }
 
-class PessoaJuridica extends Pessoa {
+abstract PessoaJuridica extends Pessoa {
   -cnpj: String
   -inscricaoEstadual: String
 }

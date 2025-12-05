@@ -1,6 +1,8 @@
 package gabriel.fontes.br.quarkus.Model;
 
 import java.time.LocalDateTime;
+
+import gabriel.fontes.br.quarkus.Model.Abstratc.PessoaFisica;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 

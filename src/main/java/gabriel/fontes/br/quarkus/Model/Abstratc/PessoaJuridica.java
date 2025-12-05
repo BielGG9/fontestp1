@@ -1,6 +1,5 @@
-package gabriel.fontes.br.quarkus.Model;
+package gabriel.fontes.br.quarkus.Model.Abstratc;
 
-import gabriel.fontes.br.quarkus.Model.Abstratc.Pessoa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 
