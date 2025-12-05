@@ -55,7 +55,7 @@ public class ClienteResource {
 
     @POST
     @Transactional
-    @RolesAllowed("ADM")
+    @RolesAllowed({"USER", "ADM"})
     public Response create(ClienteRequest request) {
         ClienteResponse response = service.create(request);
         logger.info("Cliente criado: " + response.id());

@@ -8,7 +8,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import gabriel.fontes.br.quarkus.Dto.PedidoRequest;
 import gabriel.fontes.br.quarkus.Dto.PedidoResponse;
-import gabriel.fontes.br.quarkus.Dto.ItemPedidoRequest; 
+import gabriel.fontes.br.quarkus.Dto.ItemPedidoRequest;
 import gabriel.fontes.br.quarkus.Model.Boleto;
 import gabriel.fontes.br.quarkus.Model.Cartao;
 import gabriel.fontes.br.quarkus.Model.Cliente;
@@ -135,30 +135,30 @@ public class PedidoServiceImpl implements PedidoService {
         // 7. Finalizar Pedido
         pedido.setTotal(total);
         pedido.setItens(itensParaSalvar);
-        
+
         Pagamento pagamentoEntity = null;
         Cartao cartaoVinculadoAoPedido = null; // Variável auxiliar para vincular no pedido
 
         // Normaliza a string para evitar erros de maiúscula/minúscula
-        String tipoPagamento = dto.pagamento().toLowerCase(); 
+        String tipoPagamento = dto.pagamento().toLowerCase();
 
         switch (tipoPagamento) {
             case "boleto":
                 Boleto boleto = new Boleto();
-                boleto.setCodigoBarras("34191.79001.01043.510047.910201.5.000000000"); 
+                boleto.setCodigoBarras("34191.79001.01043.510047.910201.5.000000000");
                 boleto.setDataVencimento(LocalDateTime.now().plusDays(3));
                 pagamentoEntity = boleto;
                 break;
 
             case "pix":
                 Pix pix = new Pix();
-                pix.setChavePix("00020126360014BR.GOV.BCB.PIX..."); 
+                pix.setChavePix("00020126360014BR.GOV.BCB.PIX...");
                 pix.setValidade(LocalDateTime.now().plusMinutes(30));
                 pagamentoEntity = pix;
                 break;
 
             case "cartao":
-                
+
                 Cartao cartaoParaPagamento = null;
 
                 // Opção A: Usar cartão existente pelo ID
@@ -168,36 +168,58 @@ public class PedidoServiceImpl implements PedidoService {
                         throw new NotFoundException("Cartão informado não encontrado.");
                     }
                     // Segurança: verificar se o cartão pertence ao usuário logado
-                    if (cartaoParaPagamento.getCliente() != null && !cartaoParaPagamento.getCliente().getId().equals(clienteAutenticado.getId())) {
-                         throw new ForbiddenException("Este cartão não pertence ao usuário autenticado.");
+                    if (cartaoParaPagamento.getCliente() != null
+                            && !cartaoParaPagamento.getCliente().getId().equals(clienteAutenticado.getId())) {
+                        throw new ForbiddenException("Este cartão não pertence ao usuário autenticado.");
                     }
-                } 
-                // Opção B: Cadastrar Novo Cartão
+                }
                 else if (dto.novoCartao() != null) {
-                    Cartao novo = new Cartao();
-                    novo.setNomeImpresso(dto.novoCartao().nomeImpresso());
-                    novo.setNumeroCartao(dto.novoCartao().numeroCartao()); 
-                    novo.setValidade(dto.novoCartao().validadeCartao()); 
-                    novo.setCvv(dto.novoCartao().cvv());
-                    
-                    novo.setCliente(clienteAutenticado);
-                    
-                    cartaoRepository.persist(novo);
-                    cartaoParaPagamento = novo;
-                } 
-                else {
-                     throw new BadRequestException("Para pagamento com cartão, informe o idCartao ou os dados de um novoCartao.");
+    
+    String numeroCartaoInput = dto.novoCartao().numeroCartao();
+
+    // 1. Busca se o cartão já existe no banco
+    Cartao cartaoExistenteNoBanco = cartaoRepository.find("numeroCartao", numeroCartaoInput).firstResult();
+
+    if (cartaoExistenteNoBanco != null) {
+        
+        // CENÁRIO A: Cartão existe, mas é de OUTRA PESSOA (Bloqueia)
+        if (!cartaoExistenteNoBanco.getCliente().getId().equals(clienteAutenticado.getId())) {
+            throw new ForbiddenException("Este cartão já está associado a outra conta.");
+        } 
+        
+        // CENÁRIO B: Cartão existe e é DO MESMO DONO (Reutiliza)
+        else {
+            // Não salvamos um novo. Usamos o que já está no banco.
+            cartaoParaPagamento = cartaoExistenteNoBanco;
+        }
+
+    } else {
+        // CENÁRIO C: Cartão não existe (Cria Novo)
+        Cartao novo = new Cartao();
+        novo.setNomeImpresso(dto.novoCartao().nomeImpresso());
+        novo.setNumeroCartao(numeroCartaoInput); 
+        novo.setValidade(dto.novoCartao().validadeCartao()); 
+        novo.setCvv(dto.novoCartao().cvv());
+        
+        novo.setCliente(clienteAutenticado);
+        
+        cartaoRepository.persist(novo);
+        cartaoParaPagamento = novo;
+    }
+                } else {
+                    throw new BadRequestException(
+                            "Para pagamento com cartão, informe o idCartao ou os dados de um novoCartao.");
                 }
 
                 // Cria o registro de Pagamento vinculado aos dados do cartão
                 Cartao pagamentoCartao = new Cartao();
-                
+
                 // Vamos assumir que você quer salvar os dados históricos do pagamento:
                 pagamentoCartao.setNomeImpresso(cartaoParaPagamento.getNomeImpresso());
                 pagamentoCartao.setNumeroCartao(cartaoParaPagamento.getNumeroCartao());
                 pagamentoCartao.setValidade(cartaoParaPagamento.getValidadeCartao());
                 pagamentoCartao.setCvv(cartaoParaPagamento.getCvv());
-                
+
                 pagamentoEntity = pagamentoCartao;
                 cartaoVinculadoAoPedido = cartaoParaPagamento; // Guarda a referência para setar no Pedido
                 break;
@@ -206,22 +228,23 @@ public class PedidoServiceImpl implements PedidoService {
                 throw new BadRequestException("Tipo de pagamento inválido: " + tipoPagamento);
         }
 
-        // Dados Comuns a todos os pagamentos
-        pagamentoEntity.setValor(total);
-        pagamentoEntity.setDataPagamento(LocalDateTime.now());
+    // Dados Comuns a todos os pagamentos
+    pagamentoEntity.setValor(total);pagamentoEntity.setDataPagamento(LocalDateTime.now());
 
-        // Persistir e Vincular
-        pagamentoRepository.persist(pagamentoEntity);
-        pedido.setPagamento(pagamentoEntity);
-        
-        // Se houve uso de cartão, vincula a entidade Cartão ao Pedido (Chave Estrangeira)
-        if (cartaoVinculadoAoPedido != null) {
-            pedido.setCartao(cartaoVinculadoAoPedido);
-        }
+    // Persistir e Vincular
+    pagamentoRepository.persist(pagamentoEntity);pedido.setPagamento(pagamentoEntity);
 
-        pedidoRepository.persist(pedido);
+    // Se houve uso de cartão, vincula a entidade Cartão ao Pedido (Chave
+    // Estrangeira)
+    if(cartaoVinculadoAoPedido!=null)
 
-        return PedidoResponse.fromEntity(pedido);
+    {
+        pedido.setCartao(cartaoVinculadoAoPedido);
+    }
+
+    pedidoRepository.persist(pedido);
+
+    return PedidoResponse.fromEntity(pedido);
     }
 
     @Override

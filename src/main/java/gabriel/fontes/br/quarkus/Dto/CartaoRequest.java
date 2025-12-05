@@ -18,5 +18,7 @@ public record CartaoRequest(
         @NotBlank(message = "O CVV é obrigatório")
         String cvv
 
-) { }
+) {
+
+ }
 

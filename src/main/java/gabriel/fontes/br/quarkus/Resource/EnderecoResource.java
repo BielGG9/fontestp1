@@ -25,7 +25,7 @@ public class EnderecoResource {
 
     @POST
     @Transactional
-    @RolesAllowed("ADM")
+    @RolesAllowed({"USER", "ADM"})
     public Response create(EnderecoRequest enderecoRequest) {
         EnderecoResponse enderecoCriado = service.create(enderecoRequest);
         logger.info("Endereço criado: " + enderecoCriado.id());
